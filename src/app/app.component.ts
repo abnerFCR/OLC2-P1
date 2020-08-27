@@ -13,7 +13,7 @@ import "codemirror/addon/hint/javascript-hint";
 export class AppComponent {
 
   title = 'interprete-web';
-  entrada = "5*(1+3+20) - ((1+2)*(3+4))";
+  entrada = "mula mundo ";
   salida = "";
   options: any = {
     lineNumbers: true,
