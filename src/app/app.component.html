@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-12 col-md-6">
         <div class="ngx-codemirror" style="margin-left: 10px; margin-right: 10px;">
-          <ngx-codemirror  [options]="options"
+          <ngx-codemirror  [options]="options_entrada"
             [(ngModel)]="entrada"
             [disabled]="false"
             [autoFocus]="true">
@@ -19,13 +19,24 @@
       </div>
       <div class="col-12 col-md-6">
         <div class="ngx-codemirror" style=" margin-right: 10px;">
-          <ngx-codemirror [options]="options" [(ngModel)]="salida"></ngx-codemirror>
+          <ngx-codemirror [options]="options_salida" [(ngModel)]="traduccion"></ngx-codemirror>
         </div>
       </div>
       <div class="button" style="margin-left:auto; margin-right: auto; margin-top: 25px;">
         <button type="button" class="btn btn-success" (click)="ejecutar()">Ejecutar</button>
         <button type="button" class="btn btn-success" (click)="ejecutar()" style="margin-left: 20px;">Traducir</button>
         <button type="button" class="btn btn-success" (click)="ejecutar()" style="margin-left: 20px;">Otro boton</button>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+      <div class="col-12 col-md-12">
+        <div  style="height : 90%; margin-left: 10px; margin-right: 10px;">
+          <ngx-codemirror  [options]="options_consola"
+            [(ngModel)]="salida"
+            [disabled]="true"
+            [autoFocus]="true">
+          </ngx-codemirror>
+        </div>
       </div>
     </div>
   </div>
