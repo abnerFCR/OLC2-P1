@@ -4,6 +4,8 @@
     const {Relacional, OperacionRelacional} = require('../Expresion/Relacional');
     const {Literal} = require('../Expresion/Literal');
     const {Imprimir } =require('../Instrucciones/Imprimir');
+    const {If} = require('../Instrucciones/If');
+    const {Statement} = require('../Instrucciones/Statement');
 %}
 
 %lex
@@ -110,12 +112,49 @@ Instruccion
     {
         $$=$1;
     }
+    |IfSt
+    {
+        $$=$1;
+    }
 ;
 
 Imprimir
     : CONSOLELOG '(' Expr ')' ';'
     {
         $$ = new Imprimir($3, @1.first_line, @1.first_column);
+    }
+;
+
+
+IfSt
+    : 'IF' '(' Expr ')' Statement ElseSt
+    {
+        $$ = new If($3, $5, $6, @1.first_line, @1.first_column);
+    }
+;
+
+ElseSt
+    : 'ELSE' Statement
+    {
+        $$=$2;
+    } 
+    | 'ELSE' Ifst
+    {
+        $$=$2;
+    }
+    | 
+    {
+        $$=null;    
+    }
+;
+
+Statement
+    : '{' Instrucciones '}' 
+    {
+        $$ = new Statement($2, @1.first_line, @1.first_column);
+    }
+    | '{' '}' {
+        $$ = new Statement(new Array(), @1.first_line, @1.first_column);
     }
 ;
 
