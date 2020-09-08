@@ -1,0 +1,29 @@
+//otro comentario
+console.log(true || true);
+console.log(true || false);
+console.log(false || true);
+console.log(false || false);
+console.log("------------------");
+console.log(!(true && true));
+console.log(!(true && false));
+console.log(!(false && true));
+console.log(!(false && false));
+console.log("------------------");
+console.log("hola" > "hola");
+/*
+comentario multilineas
+*/
+
+let primera;
+if(9 > 3){
+   let hola2;
+	console.log("\"hola mundo, soy mayor que 3\"");
+}else if(8 > 9){
+	//comentario de una linea
+	console.log("adios, estoy mal");
+}else{
+	console.log("soy el ultimo");
+ 
+	//comentario de una linea 2
+}
+let hola;

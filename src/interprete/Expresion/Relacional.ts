@@ -81,7 +81,7 @@ export class Relacional extends Expresion{
                 if(izquierdaValue.tipo == Tipo.BOOLEAN  && derechaValue.tipo == Tipo.BOOLEAN)
                 {
                     const respuesta:boolean = izquierdaValue.valor || derechaValue.valor;
-                    console.log("hola mundo");
+                    //console.log("hola mundo");
                     result = {valor: respuesta, tipo: Tipo.BOOLEAN};
                 }
                 else

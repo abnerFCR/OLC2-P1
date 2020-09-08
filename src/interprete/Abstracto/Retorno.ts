@@ -13,3 +13,9 @@ export type Retorno ={
     valor : any,
     tipo : Tipo
 }
+
+export class cuadro_texto{
+
+    public static salida:string ="";
+    public static errores_sintacticos_lexicos:string ="";
+}

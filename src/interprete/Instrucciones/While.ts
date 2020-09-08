@@ -4,12 +4,11 @@ import { Entorno } from "../Simbolo/Entorno";
 import { Tipo } from '../Abstracto/Retorno';
 import { Error_ } from "../Errores/Error";
 
-export class If extends Instruccion{
+export class While extends Instruccion{
 
     constructor(
         private condicion:Expresion, 
-        private instruccionesSisi: Instruccion, 
-        private instruccionesSino:Instruccion|null,
+        private instrucciones: Instruccion, 
         linea : number, 
         columna : number
         )
@@ -18,17 +17,16 @@ export class If extends Instruccion{
     }
 
     public ejecutar(entorno : Entorno) {
-        
-        const resCondicion=this.condicion.ejecutar(entorno);
+
+        let resCondicion=this.condicion.ejecutar(entorno);
         if(resCondicion.tipo != Tipo.BOOLEAN){
-            throw new Error_(this.linea, this.columna, 'Semantico', 'La condicion debe ser booleana');
+            throw new Error_(this.linea, this.columna, 'Semantico', 'Error en While: La condicion debe ser booleana.');
         }
-        
-        if(resCondicion.valor){
-            this.instruccionesSisi.ejecutar(entorno);
-        }else{
-            this.instruccionesSino?.ejecutar(entorno);
-        } 
+
+        while(resCondicion.valor){
+            this.instrucciones.ejecutar(entorno);
+            resCondicion=this.condicion.ejecutar(entorno);
+        }
 
     }
 }
