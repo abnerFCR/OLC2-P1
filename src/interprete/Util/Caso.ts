@@ -3,6 +3,7 @@ import { Entorno } from '../Simbolo/Entorno';
 import { Expresion } from '../Abstracto/Expresion';
 import { Statement } from '../Instrucciones/Statement';
 import { Retorno } from '../Abstracto/Retorno';
+import { errores } from '../Errores/Errores';
 
 export class Caso extends Instruccion{
     
@@ -22,9 +23,11 @@ export class Caso extends Instruccion{
             const respuesta = this.listaInstrucciones.ejecutar(entorno);
         }else{
             for(const instr of this.listaInstrucciones){
-                console.log("intento ejecutar las instrucciones");
-                let respuesta = instr.ejecutar(entorno);
-                console.log(respuesta);
+                try{
+                    let respuesta = instr.ejecutar(entorno);
+                }catch(error){
+                    errores.push(error);
+                }
                 //TODO poner si respuesta es una instancia de break entonces return new break (en el caso del if return new break hasta encontrar un ciclo)
             }
         }

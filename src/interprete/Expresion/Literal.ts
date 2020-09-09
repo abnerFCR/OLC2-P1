@@ -18,15 +18,11 @@ export class Literal extends Expresion{
             valor_string = valor_string.replaceAll('\\"','\"');
             valor_string = valor_string.replaceAll("\\'",'\'');
             valor_string = valor_string.replaceAll("\\\\",'\\');
-            
-            //valor_string=valor_string.replace(",);
             return {valor : valor_string, tipo : Tipo.STRING};
         }else if(this.tipo == 3){
             const v:boolean=this.valor;
             return {valor : v, tipo : Tipo.BOOLEAN};
         }
-            
     }
-
 }
 

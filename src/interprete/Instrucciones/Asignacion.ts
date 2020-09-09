@@ -22,9 +22,7 @@ export class Asignacion extends Instruccion{
         if(respuesta instanceof Error_){
             respuesta.setLinea(this.linea);
             respuesta.setColumna(this.columna);
-            errores.push(respuesta);
-            
+            throw respuesta;
         }
-        //console.log(entorno);
     }
 }

@@ -73,3 +73,33 @@ switch(hola){
 	console.log("soy default");
 
 }
+/***************************************************************/
+
+let esDia:boolean=true;
+let saludo:string ="Buenos Dias";
+let hora:number = 5.5;
+
+while(esDia){
+    hora = hora + 0.5;
+    if(hora >= 12){
+        esDia = !esDia;
+    }else{
+        console.log(saludo+"! Fercho"+ hora);
+    }
+}
+
+do{
+    hora = hora +0.5;
+    switch(hora){
+        case 13:
+            console.log("Es la una: " + hora);
+            break;
+        case 17:
+            console.log("Son las 5: " + hora);
+            break;
+        default:{
+            console.log("La hora es: "+hora);
+            break;
+        }
+    }
+}while(hora <= 18);

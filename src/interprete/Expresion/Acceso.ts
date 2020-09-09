@@ -5,7 +5,7 @@ import { Error_ } from '../Errores/Error';
 
 export class Acceso extends Expresion{
 
-    constructor(private id: string, linea : number, columna: number){
+    constructor(public id: string, linea : number, columna: number){
         super(linea, columna);
     }
 

@@ -9,6 +9,7 @@
     const { If } = require('../Instrucciones/If');
     const { While } = require('../Instrucciones/While');
     const { DoWhile } = require('../Instrucciones/DoWhile');
+    const { IncreDecre } = require('../Instrucciones/IncreDecre');
     const { Statement} = require('../Instrucciones/Statement');
     const { Asignacion} = require('../Instrucciones/Asignacion');
     const { Tipo, cuadro_texto } =require("../Abstracto/Retorno");
@@ -170,11 +171,15 @@ Instruccion
     {
         $$=$1;
     }
+    |IncreDecre ';'
+    {
+        $$=$1;
+    }
     |error ';'  
     {
         //console.log("Error vino"+yytext+" vino "+ @1.first_line+" "+  @1.first_column, " se esperaba "+ (this.terminals_[symbol] || symbol));
-        console.log("->>>>MARCANDO ERROR SINTACTICO");
-        error = new Error_(@1.first_line, @1.first_column, 'Sintactico', 'Error Sintactico: " ' + yytext + ' ",  no se esperaba');
+        //console.log($1);
+        error = new Error_(@1.first_line, @1.first_column, 'Sintactico', 'Error Sintactico: " ' + $1 + ' ",  no se esperaba');
         errores.push(error);
         $$="asdf";
     }
@@ -279,6 +284,16 @@ Caso
     }
 ;
 
+IncreDecre
+    : ID '++'
+    {   
+        $$ = new IncreDecre('incre', new Acceso($1, @1.first_line, @1.first_column), @1.first_line, @1.first_column);
+    }
+    |ID '--'
+    {
+        $$ = new IncreDecre('decre', new Acceso($1, @1.first_line, @1.first_column), @1.first_line, @1.first_column);
+    }
+;
 
 Statement
     : '{' Instrucciones '}' 

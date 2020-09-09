@@ -14,7 +14,6 @@ export abstract class Expresion {
 
     public abstract ejecutar(entorno: Entorno) : Retorno;
 
-
     public tipoDominante(tipo1 : Tipo, tipo2 : Tipo) : Tipo{
         const tipo = tipos[tipo1][tipo2];
         return tipo;
