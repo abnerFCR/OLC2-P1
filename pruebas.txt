@@ -14,7 +14,7 @@ console.log("hola" > "hola");
 comentario multilineas
 */
 
-let primera;
+let primera=4;
 if(9 > 3){
    let hola2;
 	console.log("\"hola mundo, soy mayor que 3\"");
@@ -26,4 +26,50 @@ if(9 > 3){
  
 	//comentario de una linea 2
 }
-let hola;
+
+if(true){
+	let hola=5;
+}
+console.log(hola);
+
+let tercera;
+tercera=5;
+
+if(tercera > 2){
+	tercera=3;
+}else{
+	tercera=10;
+}
+console.log(tercera);
+
+let conta=1;
+
+while(conta < 10){
+	console.log("contador: "+conta);
+  	conta=conta+1;
+}
+
+let contador=1;
+
+while(contador < 10){
+	console.log("Contador: "+contador);
+	contador=contador+1;
+}
+console.log(contador);
+
+let hola=8;
+
+switch(hola){
+  case 1:{
+  	console.log("soy uno");
+  }
+  case 2:
+	console.log("soy 2");
+  case 3: 
+	console.log("soy 3");
+  case 5: 
+	console.log("soy 5");
+	default: 
+	console.log("soy default");
+
+}

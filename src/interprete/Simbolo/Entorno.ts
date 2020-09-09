@@ -23,7 +23,7 @@ export class Entorno{
             }
             entorno = entorno.anterior;
         }
-        let nuevoError= new Error_(1,1,"entorno", "Ya existe una variable con el mismo nombre en ese ambito");
+        let nuevoError= new Error_(1,1,"Semantico", "Ya existe una variable con el mismo nombre en ese ambito");
         errores.push(nuevoError);
         //this.variables.set(id, new Simbolo(valor, id, tipo));
     }
@@ -36,8 +36,35 @@ export class Entorno{
             }
             entorno = entorno.anterior;
         }
-        let nuevoError= new Error_(1,1,"Entorno", "No existe la variable en este ambito");
-        errores.push(nuevoError);
+        //let nuevoError= new Error_(1,2,"Semantico", "No existe la variable en este ambito");
+        //errores.push(nuevoError);
         return null;
     } 
+
+    public updateVar(id: string, valor: any, tipo: Tipo): any{
+        let entorno : Entorno | null = this;
+        while(entorno != null){
+            if(entorno.variables.has(id)){
+                let simboloActual:Simbolo = entorno.variables.get(id);
+                if(simboloActual.tipoSimbolo == 'let'){ 
+                    if(simboloActual.tipo == tipo   ||  simboloActual.tipo== Tipo.NULL){
+                        entorno.variables.set(id, new Simbolo(valor, id, tipo, simboloActual.tipoSimbolo));
+                        return;
+                    }else{
+                        return new Error_(1,1,"Entorno", "No se puede asignar un tipo "+tipo+" en un tipo " + simboloActual.tipo);
+                        //errores.push(nuevoError);
+                        //return;
+                    }
+                }else{ 
+                    return new Error_(1,1,"Entorno", "No se puede modificar una constante");
+                    //errores.push(nuevoError);
+                    //return;
+                }
+            }
+            entorno = entorno.anterior;
+        }
+        return new Error_(1,1,"Entorno", "Ya existe una variable con el mismo nombre en ese ambito");
+        //errores.push(nuevoError);
+        //this.variables.set(id, new Simbolo(valor, id, tipo));
+    }
 }

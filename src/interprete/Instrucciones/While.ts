@@ -22,10 +22,12 @@ export class While extends Instruccion{
         if(resCondicion.tipo != Tipo.BOOLEAN){
             throw new Error_(this.linea, this.columna, 'Semantico', 'Error en While: La condicion debe ser booleana.');
         }
-
-        while(resCondicion.valor){
-            this.instrucciones.ejecutar(entorno);
-            resCondicion=this.condicion.ejecutar(entorno);
+        while(resCondicion.valor){  
+            const resultado = this.instrucciones.ejecutar(entorno);   
+            resCondicion = this.condicion.ejecutar(entorno);
+            if(resCondicion.tipo != Tipo.BOOLEAN){
+                throw new Error_(this.linea, this.columna, 'Semantico', 'Error en While: La condicion debe ser booleana.');
+            }
         }
 
     }

@@ -1,19 +1,22 @@
  
 %{
-    const {Aritmetica, OperacionAritmetica} = require('../Expresion/Aritmetica');
-    const {Relacional, OperacionRelacional} = require('../Expresion/Relacional');
-    const {Acceso} = require('../Expresion/Acceso');
-    const {Literal} = require('../Expresion/Literal');
-    const {Imprimir } =require('../Instrucciones/Imprimir');
-    const {If} = require('../Instrucciones/If');
-    const {While} = require('../Instrucciones/While');
-    const {DoWhile} = require('../Instrucciones/DoWhile');
-    const {Statement} = require('../Instrucciones/Statement');
+    const { Aritmetica, OperacionAritmetica} = require('../Expresion/Aritmetica');
+    const { Relacional, OperacionRelacional} = require('../Expresion/Relacional');
+    const { Acceso} = require('../Expresion/Acceso');
+    const { Literal} = require('../Expresion/Literal');
+    const { Imprimir } =require('../Instrucciones/Imprimir');
+    const { Switch } =require('../Instrucciones/Switch');
+    const { If } = require('../Instrucciones/If');
+    const { While } = require('../Instrucciones/While');
+    const { DoWhile } = require('../Instrucciones/DoWhile');
+    const { Statement} = require('../Instrucciones/Statement');
+    const { Asignacion} = require('../Instrucciones/Asignacion');
     const { Tipo, cuadro_texto } =require("../Abstracto/Retorno");
     const { errores } =require('../Errores/Errores');
     const { Error_ } =require('../Errores/Error');
     const { Declaracion } = require('../Instrucciones/Declaracion');
     const { ElementoDeclaracion, TipoDeclaracion } = require('../Util/ElementoDeclaracion');
+    const { Caso } = require('../Util/Caso');
 %}
 
 %lex
@@ -89,7 +92,9 @@ string (\"({escape}|{acceptedquote})*\")
 "number"                return 'TIPONUMBER'
 "string"                return 'TIPOSTRING'
 "boolean"               return 'TIPOBOOLEAN'
-
+"switch"                return 'SWITCH'
+"case"                  return 'CASE'
+"default"               return 'DEFAULT'
 
 ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*	return 'ID';
 <<EOF>>		            return 'EOF'
@@ -145,11 +150,27 @@ Instruccion
     {
         $$=$1;
     }
+    |AsignacionVariable
+    {
+        $$=$1;
+    }
     |IfSt
     {
         $$=$1;
     }
-    |error ';'
+    |WhileSt
+    {
+        $$=$1;
+    }
+    |DoWhileSt
+    {
+        $$=$1;
+    }
+    |SwitchSt
+    {
+        $$=$1;
+    }
+    |error ';'  
     {
         //console.log("Error vino"+yytext+" vino "+ @1.first_line+" "+  @1.first_column, " se esperaba "+ (this.terminals_[symbol] || symbol));
         console.log("->>>>MARCANDO ERROR SINTACTICO");
@@ -170,8 +191,19 @@ DeclaracionVariable
     : 'LET' ListaDeclaraciones ';' 
     {
         $$= new Declaracion('let', $2, @1.first_line, @1.first_column);
+    }
+    | 'CONST' ListaDeclaraciones ';'
+    {
+        $$ = new Declaracion('const',$2, @1.first_line, @1.first_column);
     }   
 ; 
+
+AsignacionVariable
+    : ID '=' Expr ';'
+    {
+        $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
+    }
+;
 
 IfSt
     : 'IF' '(' Expr ')' Statement ElseSt
@@ -208,6 +240,45 @@ DoWhileSt
         $$ = new DoWhile($5, $2, @1.first_line, @1.first_column);
     }
 ;
+
+SwitchSt
+    : 'SWITCH' '(' Expr ')' '{' ListaCasos '}' 
+    {
+        $$ = new Switch($3, $6, @1.first_line, @1.first_column);
+    }
+;
+
+ListaCasos
+    : ListaCasos Caso 
+    {
+        $1.push($2);
+        $$ = $1;
+    }
+    |Caso 
+    {
+        $$=[$1];
+    }
+;
+
+Caso
+    : 'CASE' Expr ':' Statement
+    {
+        $$ = new Caso($2, $4, @1.first_line, @1.first_column);
+    }
+    | 'DEFAULT' ':' Statement
+    {
+        $$ = new Caso(null, $3, @1.first_line, @1.first_column);
+    }
+    | 'CASE' Expr ':' Instrucciones
+    {
+        $$ = new Caso($2, $4, @1.first_line, @1.first_column);
+    }
+    | 'DEFAULT' ':' Instrucciones
+    {
+        $$ = new Caso(null, $3, @1.first_line, @1.first_column);
+    }
+;
+
 
 Statement
     : '{' Instrucciones '}' 

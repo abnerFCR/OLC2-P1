@@ -13,8 +13,10 @@ export class Statement extends Instruccion{
         for(const instr of this.sentencias){
             try {
                 const elemento = instr.ejecutar(nuevoEntorno);
+                /*
                 if(elemento != undefined || elemento != null)
-                    return elemento;                
+                    return elemento;
+                */                
             } catch (error) {
                 errores.push(error);
             }

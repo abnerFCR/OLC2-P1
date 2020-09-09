@@ -50,7 +50,5 @@ export class Declaracion extends Instruccion{
                 throw new Error_(this.linea, this.columna, 'Semantico', 'Error al declarar la variable [DEV. Revisar clase declaracion] ');
             }
         }
-        console.log(entorno);
-        
     }
 }

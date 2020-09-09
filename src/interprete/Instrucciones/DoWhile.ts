@@ -24,8 +24,11 @@ export class DoWhile extends Instruccion{
         }
 
         do{
-            this.instrucciones.ejecutar(entorno);
+            const resultado=this.instrucciones.ejecutar(entorno);
             resCondicion=this.condicion.ejecutar(entorno);
+            if(resCondicion.tipo != Tipo.BOOLEAN){
+                throw new Error_(this.linea, this.columna, 'Semantico', 'Error en Do while: La condicion debe ser booleana.');
+            }
         }while(resCondicion.valor);
 
     }
