@@ -20,10 +20,11 @@ export class IncreDecre extends Instruccion{
         if(respuesta.tipo == Tipo.NUMBER){
             if(this.operacion == "incre"){
                 respuesta.valor++;
+                //console.log(entorno);
             }else{
                 respuesta.valor--;
             }
-            let cumplido = entorno.updateVar(this.id.id, respuesta.valor,respuesta.tipo);
+            let cumplido = entorno.updateVar(this.id.id, respuesta.valor,respuesta.tipo, "", this.linea, this.columna);
             if(cumplido instanceof Error_){
                 cumplido.setLinea(this.linea);
                 cumplido.setColumna(this.columna);

@@ -3,7 +3,7 @@ import { Retorno,Tipo } from "../Abstracto/Retorno";
 
 export class Literal extends Expresion{
     
-    constructor(private valor : any, linea : number, columna: number, private tipo : number){
+    constructor(private valor : any, linea : number, columna: number, public tipo : number){
         super(linea, columna);
     }
 
@@ -22,6 +22,8 @@ export class Literal extends Expresion{
         }else if(this.tipo == 3){
             const v:boolean=this.valor;
             return {valor : v, tipo : Tipo.BOOLEAN};
+        }else if(this.tipo == 4){
+            return {valor:null, tipo:Tipo.NULL}
         }
     }
 }

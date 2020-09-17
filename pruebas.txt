@@ -93,13 +93,32 @@ do{
     switch(hora){
         case 13:
             console.log("Es la una: " + hora);
-            break;
+
         case 17:
             console.log("Son las 5: " + hora);
-            break;
+
         default:{
             console.log("La hora es: "+hora);
-            break;
+
         }
     }
 }while(hora <= 18);
+
+
+type hola={
+	primer:string,
+    segundo:number,
+  	tercero:boolean,
+  	cuarto:hola
+};
+
+type adios={
+	primer:string,
+    segundo:number,
+  	tercero:boolean,
+  	cuarto:hola
+};
+
+let primeraHola:hola ={
+	primera:"ciencuenta"
+}; 

@@ -8,7 +8,8 @@ export enum Tipo{
     VOID = 5,
     BREAK = 6,
     CONTINUE = 7,
-    RETURN =8
+    RETURN =8,
+    TYPE = 9
 
 }
 //TODO QUITAR TIPOS DE RETORNOS DEL 6 AL 8 SI NO FUNCIONA

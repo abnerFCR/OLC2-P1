@@ -18,7 +18,7 @@ export class Asignacion extends Instruccion{
 
     public ejecutar(entorno: Entorno){
         const resultado = this.valor.ejecutar(entorno);
-        let respuesta = entorno.updateVar(this.id, resultado.valor, resultado.tipo);
+        let respuesta = entorno.updateVar(this.id, resultado.valor, resultado.tipo," ",this.linea, this.columna);
         if(respuesta instanceof Error_){
             respuesta.setLinea(this.linea);
             respuesta.setColumna(this.columna);

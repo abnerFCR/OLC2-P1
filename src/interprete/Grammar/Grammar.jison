@@ -1,8 +1,9 @@
  
 %{
-    const { Aritmetica, OperacionAritmetica} = require('../Expresion/Aritmetica');
-    const { Relacional, OperacionRelacional} = require('../Expresion/Relacional');
-    const { Acceso} = require('../Expresion/Acceso');
+    const { Aritmetica, OperacionAritmetica } = require('../Expresion/Aritmetica');
+    const { Relacional, OperacionRelacional } = require('../Expresion/Relacional');
+    const { Acceso } = require('../Expresion/Acceso');
+    const { AccesoTipo } = require('../Expresion/AccesoTipo');
     const { Literal} = require('../Expresion/Literal');
     const { Imprimir } =require('../Instrucciones/Imprimir');
     const { Switch } =require('../Instrucciones/Switch');
@@ -18,6 +19,7 @@
     const { Declaracion } = require('../Instrucciones/Declaracion');
     const { ElementoDeclaracion, TipoDeclaracion } = require('../Util/ElementoDeclaracion');
     const { Caso } = require('../Util/Caso');
+    const { DeclaracionType } = require('../Instrucciones/DeclaracionType');
 %}
 
 %lex
@@ -79,7 +81,7 @@ string (\"({escape}|{acceptedquote})*\")
 "]"                     return ']'
 
 ":"                     return ':'
-
+"."                     return '.'
 //PALABRAS RESERVADAS
 "if"                    return 'IF'
 "else"                  return 'ELSE'
@@ -96,6 +98,8 @@ string (\"({escape}|{acceptedquote})*\")
 "switch"                return 'SWITCH'
 "case"                  return 'CASE'
 "default"               return 'DEFAULT'
+"type"                  return 'TYPE'
+"null"                  return 'NULL'
 
 ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*	return 'ID';
 <<EOF>>		            return 'EOF'
@@ -175,6 +179,10 @@ Instruccion
     {
         $$=$1;
     }
+    |DefinicionTypes ';'
+    {
+        $$=$1;
+    }
     |error ';'  
     {
         //console.log("Error vino"+yytext+" vino "+ @1.first_line+" "+  @1.first_column, " se esperaba "+ (this.terminals_[symbol] || symbol));
@@ -184,6 +192,7 @@ Instruccion
         $$="asdf";
     }
 ;
+
 
 Imprimir
     : CONSOLELOG '(' Expr ')' ';'
@@ -300,7 +309,8 @@ Statement
     {
         $$ = new Statement($2, @1.first_line, @1.first_column);
     }
-    | '{' '}' {
+    | '{' '}' 
+    {
         $$ = new Statement(new Array(), @1.first_line, @1.first_column);
     }
 ;
@@ -320,19 +330,50 @@ ListaDeclaraciones
 ElementoDeclaracion
     :ID ':' TipoNormal '=' Expr
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR,$1,$3,$5);
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR,$1,$3,'',$5);
     }
     |ID ':' TipoNormal
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1,$3,null);
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1,$3,'',null);
     }
     |ID '=' Expr
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_VALOR,$1,null,$3);
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_VALOR,$1,'',null,$3);
     }
     |ID
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID,$1, null, null);
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID,$1, null, '',null);
+    }
+    |ID ':' ID
+    {
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1, Tipo.TYPE, $3, null);
+    }
+    |ID ':' ID '=' '{' ListaValoresTipo '}'
+    {
+        $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, $6);
+    }
+;
+
+ListaValoresTipo
+    :ListaValoresTipo ',' ValorType
+    {
+        $1.push($3);
+        $$ = $1;
+    }
+    |ValorType
+    {
+        $$=[$1];
+    }
+;
+
+ValorType
+    :ID ':' Expr
+    {
+        $$={id:$1, valor:$3};
+    }
+    |ID ':' '{' ListaValoresTipo '}'
+    {
+        $$ = {id:$1, valor:$4}
     }
 ;
 
@@ -348,6 +389,77 @@ TipoNormal
     |'TIPONUMBER'
     {
         $$=Tipo.NUMBER;
+    }
+;
+
+DefinicionTypes
+    : 'TYPE' ID '=' '{' ListaDefiniciones '}'
+    {
+        $$ = new DeclaracionType($2, $5, @1.first_line, @1.first_column);
+    }
+;
+
+ListaDefiniciones
+    : ListaDefiniciones ',' DefinicionAtributo
+    {
+        $1.push($3);
+        $$=$1;
+    }
+    |DefinicionAtributo
+    {
+        $$=[$1];
+    }
+;
+
+DefinicionAtributo
+    :ID ':' ID
+    {
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1,Tipo.TYPE,$3,null);
+    }
+    |ID ':' TipoNormal
+    {
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1,$3,'',null);
+    }
+;
+
+
+
+DeclaracionArreglos
+    :'LET' ID ':' Tipos ListaDimensiones ';'
+    {
+        $$ = new DeclaracionArreglo($2, $4, $5,null,@1.first_line, @1.first_column);
+    }
+    |'LET' ID ':' ListaDimensiones ';'
+    {
+        $$= new DeclaracionArreglo();
+    }    
+    |'LET' ID '=' ListaDimensiones ';'
+    |'LET' ID ':' 'TIPO' ListaDimensiones '=' ValoresArreglo ';'
+    |'LET' ID ':' ListaDimensiones '=' ValoresArreglo ';'
+    |'LET' ID '=' ValoresArreglo ';'
+;
+
+ListaDimensiones
+    :ListaDimensiones '[' ']'
+    {
+        $$=new Simbolo(new Arreglo([$1],), '', Tipo.ARRAY, '');
+    } 
+    |'LET' ID ':' Tipos '['']'
+    {
+        $$=new Simbolo(new Arreglo(null, $4), $2, Tipo.ARRAY, 'let');
+    }
+    |
+
+;
+
+Tipos
+    :TipoNormal
+    {
+        $$=$1;
+    }
+    |ID
+    {
+        $$=$1;
     }
 ;
 
@@ -458,6 +570,43 @@ F   : '(' Expr ')'
     {
         $$ = new Literal(false, @1.first_line, @1.first_column, 3);
     }
-    | ID{
+    | ID
+    {
         $$ = new Acceso($1, @1.first_line, @1.first_column);
-    };
+    }
+    |Accesos
+    {
+        $$ = $1;
+    }
+    |NULL 
+    {
+        $$ = new Literal($1, @1.first_line, @1.first_column,4);
+    }
+;
+
+Accesos
+    :Accesos '.' ID
+    {
+        $$ = new AccesoTipo($3,'', $1, @1.first_line, @1.first_column);
+    }
+    |Accesos '[' Expr ']'
+    {
+
+    }
+    |Accesos '.' ID '(' Parametros ')'
+    {
+
+    }
+    |ID '.' ID 
+    {
+        $$ =  new AccesoTipo($1, $3, null, @1.first_line, @1.first_column);
+    }
+    |ID '[' Expr ']'
+    {
+
+    }
+    |ID '.' ID '(' Parametros ')'
+    {
+
+    }
+;
