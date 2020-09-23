@@ -78,8 +78,10 @@ switch(hola){
 let esDia:boolean=true;
 let saludo:string ="Buenos Dias";
 let hora:number = 5.5;
-
+graficar_ts();
 while(esDia){
+  let otra:string;
+  //graficar_ts();
     hora = hora + 0.5;
     if(hora >= 12){
         esDia = !esDia;
@@ -87,7 +89,7 @@ while(esDia){
         console.log(saludo+"! Fercho"+ hora);
     }
 }
-
+//graficar_ts();
 do{
     hora = hora +0.5;
     switch(hora){
@@ -103,7 +105,6 @@ do{
         }
     }
 }while(hora <= 18);
-
 
 type hola={
 	primer:string,
@@ -122,3 +123,31 @@ type adios={
 let primeraHola:hola ={
 	primera:"ciencuenta"
 }; 
+graficar_ts();
+
+
+
+
+    private stringTemplateParser(expression: string, environment: Environment) {
+        const templateMatcher = /\${\s?([^{}\s]*)\s?}/g;
+        let text = expression.replace(templateMatcher, (substring, value, index) => {
+            value = environment.getVar(value);
+            if (value == null)
+            errores.push( new Error_(this.line, this.column, 'Semantico', 'Variable no definida'));
+            return value.valor;
+        });
+        return text.replace(/`/g, "");
+    }
+
+//-----------NUMERO IMPARES DEL 1 AL 10-------------------
+console.log("-----------NUMERO IMPARES DEL 1 AL 10---------------");
+let numero=0;
+while(numero<10){
+  	numero++;
+	if(numero%2 ==0){
+		continue;
+	}
+  console.log(numero);
+}
+console.log("--------------------------------------------------");
+//-------------------------------------------------------

@@ -25,7 +25,7 @@
       <div class="button" style="margin-left:auto; margin-right: auto; margin-top: 25px;">
         <button type="button" class="btn btn-success" (click)="ejecutar()">Ejecutar</button>
         <button type="button" class="btn btn-success" (click)="ejecutar()" style="margin-left: 20px;">Traducir</button>
-        <button type="button" class="btn btn-success" (click)="ejecutar()" style="margin-left: 20px;">Otro boton</button>
+        <button type="button" class="btn btn-success" routerLink='/reportes' style="margin-left: 20px;">Reportes</button>
       </div>
     </div>
     <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
@@ -40,7 +40,5 @@
       </div>
     </div>
   </div>
-
+  <router-outlet></router-outlet>
 </div>
-
-<router-outlet></router-outlet>

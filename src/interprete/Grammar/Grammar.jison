@@ -6,6 +6,9 @@
     const { AccesoTipo } = require('../Expresion/AccesoTipo');
     const { Literal} = require('../Expresion/Literal');
     const { Imprimir } =require('../Instrucciones/Imprimir');
+    const { GraficarTs } =require('../Instrucciones/GraficarTs');
+    const { Break } =require('../Instrucciones/Break');
+    const { Continue } =require('../Instrucciones/Continue');
     const { Switch } =require('../Instrucciones/Switch');
     const { If } = require('../Instrucciones/If');
     const { While } = require('../Instrucciones/While');
@@ -89,6 +92,7 @@ string (\"({escape}|{acceptedquote})*\")
 "true"                  return 'TRUE'
 "false"                 return 'FALSE'
 "console.log"           return 'CONSOLELOG'
+"graficar_ts"           return 'GRAFICAR_TS'
 "do"                    return 'DO'
 "let"                   return 'LET'
 "const"                 return 'CONST'
@@ -100,6 +104,8 @@ string (\"({escape}|{acceptedquote})*\")
 "default"               return 'DEFAULT'
 "type"                  return 'TYPE'
 "null"                  return 'NULL'
+"break"                  return 'BREAK'
+"continue"                  return 'CONTINUE'
 
 ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*	return 'ID';
 <<EOF>>		            return 'EOF'
@@ -183,7 +189,27 @@ Instruccion
     {
         $$=$1;
     }
+    |GraficarTs ';'
+    {
+        $$ =$1;
+    }
+    |'BREAK' ';'
+    {
+        $$ =new Break(@1.first_line, @1.first_column);
+    }
+    |'CONTINUE' ';'
+    {
+        $$ =new Continue(@1.first_line, @1.first_column);
+    }
     |error ';'  
+    {
+        //console.log("Error vino"+yytext+" vino "+ @1.first_line+" "+  @1.first_column, " se esperaba "+ (this.terminals_[symbol] || symbol));
+        //console.log($1);
+        error = new Error_(@1.first_line, @1.first_column, 'Sintactico', 'Error Sintactico: " ' + $1 + ' ",  no se esperaba');
+        errores.push(error);
+        $$="asdf";
+    }
+    |error '}'  
     {
         //console.log("Error vino"+yytext+" vino "+ @1.first_line+" "+  @1.first_column, " se esperaba "+ (this.terminals_[symbol] || symbol));
         //console.log($1);
@@ -198,6 +224,13 @@ Imprimir
     : CONSOLELOG '(' Expr ')' ';'
     {
         $$ = new Imprimir($3, @1.first_line, @1.first_column);
+    }
+;
+
+GraficarTs
+    :'GRAFICAR_TS' '(' ')'
+    {
+        $$ = new GraficarTs(@1.first_line,@1.first_column);
     }
 ;
 
@@ -351,6 +384,10 @@ ElementoDeclaracion
     |ID ':' ID '=' '{' ListaValoresTipo '}'
     {
         $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, $6);
+    }
+    |ID ':' ID '=' 'NULL'
+    {
+        $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, new Literal('null', @1.first_line, @1.first_column,4));
     }
 ;
 

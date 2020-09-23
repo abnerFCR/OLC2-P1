@@ -68,6 +68,9 @@ export class Declaracion extends Instruccion {
             throw new Error_(this.linea, this.columna, 'Semantico', 'Error el tipo especificado no existe');
         }
 
+        /*
+        codigo utilizado para generar el tipo desde la declaracion. 
+
         let listaAtributos: Map<string, Simbolo> = new Map();
         for (const atributo of plantillaType.atributos) { //atributo devuelve un arreglo en cuya posicion 0 esta la clave y en la 1 esta el valor
             let idTipo = '';
@@ -78,14 +81,18 @@ export class Declaracion extends Instruccion {
         }
 
         let nuevaVariableTipo = new Type_(listaAtributos);
-
-        entorno.guardar(declaracion.id, nuevaVariableTipo, Tipo.TYPE, 'let', declaracion.idTipo, this.linea, this.columna);
+        */
+        entorno.guardar(declaracion.id, null, Tipo.TYPE, 'let', declaracion.idTipo, this.linea, this.columna);
+        console.log("Declaracion");
         console.log(entorno);
 
         //declaracion.valor en este caso tiene una lista de valores ya que es un type
         if (declaracion.valor != null) {
-            let asignacion = new AsignacionTipo(declaracion.id, declaracion.idTipo, declaracion.valor, this.linea, this.columna);
-            asignacion.ejecutar(entorno);
+            if(declaracion.valor.tipo != Tipo.NULL){
+                let asignacion = new AsignacionTipo(declaracion.id, declaracion.idTipo, declaracion.valor, this.linea, this.columna);
+                asignacion.ejecutar(entorno);
+            }
+            
         }
     }
 

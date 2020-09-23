@@ -1,0 +1,88 @@
+
+<h1 style="text-align: center;">REPORTE DE ERRORES</h1>
+<br>
+<h3 style="text-align: center;">Errores Semanticos</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">TIPO</th>
+            <th scope="col">DESCRIPCION</th>
+            <th scope="col">FILA</th>
+            <th scope="col">COLUMNA</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let err of errores2" [ngClass]="{'table-danger': err.tipo =='Semantico'}">
+            <th *ngIf='err.tipo=="Semantico"' scope="row">{{err.tipo}}</th>
+            <td *ngIf='err.tipo=="Semantico"'>{{err.mensaje}}</td>
+            <td *ngIf='err.tipo=="Semantico"'>{{err.linea}}</td>
+            <td *ngIf='err.tipo=="Semantico"'>{{err.columna}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+<h3 style="text-align: center;">Errores Lexicos</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">TIPO</th>
+            <th scope="col">DESCRIPCION</th>
+            <th scope="col">FILA</th>
+            <th scope="col">COLUMNA</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let err of errores2" [ngClass]="{'table-warning': err.tipo =='Lexico'}">
+            <th *ngIf='err.tipo=="Lexico"' scope="row">{{err.tipo}}</th>
+            <td *ngIf='err.tipo=="Lexico"'>{{err.mensaje}}</td>
+            <td *ngIf='err.tipo=="Lexico"'>{{err.linea}}</td>
+            <td *ngIf='err.tipo=="Lexico"'>{{err.columna}}</td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<h3 style="text-align: center;">Errores Sintacticos</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">TIPO</th>
+            <th scope="col">DESCRIPCION</th>
+            <th scope="col">FILA</th>
+            <th scope="col">COLUMNA</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let err of errores2" [ngClass]="{'table-success': err.tipo =='Sintactico'}">
+            <th *ngIf='err.tipo=="Sintactico"' scope="row">{{err.tipo}}</th>
+            <td *ngIf='err.tipo=="Sintactico"'>{{err.mensaje}}</td>
+            <td *ngIf='err.tipo=="Sintactico"'>{{err.linea}}</td>
+            <td *ngIf='err.tipo=="Sintactico"'>{{err.columna}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+<br>
+<h1 style="text-align: center;">REPORTE DE SIMBOLOS</h1>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">TIPO DE SIMBOLO</th>
+            <th scope="col">NOMBRE</th>
+            <th scope="col">TIPO</th>
+            <th scope="col">FILA</th>
+            <th scope="col">COLUMNA</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let simbolo of simbolos" class="table-primary">
+            <th scope="row">{{simbolo[0].tipoSimbolo}}</th>
+            <td>{{simbolo[0].id}}</td>
+            <td>{{tiposString[simbolo[0].tipo]}}</td>
+            <td>{{simbolo[1]}}</td>
+            <td>{{simbolo[2]}}</td>
+        </tr>
+    </tbody>
+</table>
+<div id="graph" style="text-align: center;"></div>

@@ -4,6 +4,8 @@ import { Expresion } from '../Abstracto/Expresion';
 import { Statement } from '../Instrucciones/Statement';
 import { Retorno } from '../Abstracto/Retorno';
 import { errores } from '../Errores/Errores';
+import { Break } from '../Instrucciones/Break';
+import { Continue } from '../Instrucciones/Continue';
 
 export class Caso extends Instruccion{
     
@@ -18,25 +20,31 @@ export class Caso extends Instruccion{
 
 
     public ejecutar(entorno: Entorno) {
-        
         if(this.listaInstrucciones instanceof Statement){
             const respuesta = this.listaInstrucciones.ejecutar(entorno);
+            if(respuesta instanceof Break){
+                return respuesta;
+            }
         }else{
             for(const instr of this.listaInstrucciones){
                 try{
                     let respuesta = instr.ejecutar(entorno);
+                    if(respuesta instanceof Break){
+                        return respuesta;
+                    }
+                    if(respuesta instanceof Continue){
+                        return respuesta;
+                    }
                 }catch(error){
                     errores.push(error);
-                }
-                //TODO poner si respuesta es una instancia de break entonces return new break (en el caso del if return new break hasta encontrar un ciclo)
+                } 
             }
-        }
-        
+        }   
     }
 
     public getValor(entorno:Entorno):Retorno{
         if(this.valor == null){
-            return null;
+            return null;//si el caso devuelve null es porque es default
         }
         return this.valor.ejecutar(entorno);
     }

@@ -1,14 +1,18 @@
 import { Simbolo } from "./Simbolo";
-import { Tipo } from "../Abstracto/Retorno";
+import { cuadro_texto, Tipo } from "../Abstracto/Retorno";
 import { Error_ } from '../Errores/Error';
 import { errores } from '../Errores/Errores';
 import { Type_ } from '../Objetos/Type_';
 
 export class Entorno {
 
-    private variables: Map<string, Simbolo>;
-    //TODO UNA CLASE LLAMADA TYPE Y PONERLO COMO VALOR DEL MAP
+    public variables: Map<string, Simbolo>;
+    
     private types: Map<string, Type_>;
+
+    public banderaCiclo:boolean[]=new Array();
+    public banderaSwitch:boolean[]=new Array();
+    public banderaFuncion:boolean;
 
     constructor(public anterior: Entorno | null) {
         this.variables = new Map();
@@ -20,6 +24,7 @@ export class Entorno {
         let entorno: Entorno | null = this;
         if (!entorno.variables.has(id)  &&  !entorno.types.has(id)) {
             entorno.variables.set(id, new Simbolo(valor, id, tipo, tipoSimbolo,idTipo));
+            cuadro_texto.simbolos.push([entorno.getVar(id),fila,columna]);
             return;
         }
         throw new Error_(fila, columna, "Semantico", "Ya existe una variable con el mismo nombre en ese ambito");
@@ -96,5 +101,63 @@ export class Entorno {
             entorno= entorno.anterior;
         }
         return new Error_(fila, columna, "Semantico", 'La variable solicitada no existe [dev].')
+    }
+
+    public getBanderaCiclo():boolean{
+        let entorno:Entorno = this;
+        while(entorno!=null){
+            if(entorno.anterior == null){
+                if(entorno.banderaCiclo.length == 0){
+                    console.log("-------------------->"+entorno.banderaCiclo);
+                    return false;
+                }
+                return true;
+                //return entorno.banderaCiclo;
+            }
+            entorno = entorno.anterior;
+        }
+    }
+    public setBanderaCiclo(banderaCiclo){
+        let entorno:Entorno = this;
+        while(entorno!=null){
+            if(entorno.anterior == null){
+                if(banderaCiclo){
+                    entorno.banderaCiclo.push(banderaCiclo);
+                    return;
+                }
+                entorno.banderaCiclo.pop();
+                return;
+                //entorno.banderaCiclo = banderaCiclo;
+                //return;
+            }
+            entorno = entorno.anterior;
+        }
+    }
+
+    public getBanderaSwitch():boolean{
+        let entorno:Entorno = this;
+        while(entorno!=null){
+            if(entorno.anterior == null){
+                if(entorno.banderaSwitch.length == 0){
+                    return false;
+                }
+                return true;
+            }
+            entorno = entorno.anterior;
+        }
+    }
+    public setBanderaSwitch(banderaSwitch){
+        let entorno:Entorno = this;
+        while(entorno!=null){
+            if(entorno.anterior == null){
+                if(banderaSwitch){
+                    entorno.banderaSwitch.push(banderaSwitch);
+                    return;
+                }
+                entorno.banderaSwitch.pop();
+                return;
+            }
+            entorno = entorno.anterior;
+        }
     }
 }

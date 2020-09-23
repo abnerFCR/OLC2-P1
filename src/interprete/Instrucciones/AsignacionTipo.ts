@@ -5,6 +5,8 @@ import { errores } from '../Errores/Errores';
 import { Tipo } from '../Abstracto/Retorno';
 import { Declaracion } from './Declaracion';
 import { ElementoDeclaracion, TipoDeclaracion } from '../Util/ElementoDeclaracion';
+import { Simbolo } from '../Simbolo/Simbolo';
+import { Type_ } from '../Objetos/Type_';
 
 export class AsignacionTipo extends Instruccion {
 
@@ -22,6 +24,21 @@ export class AsignacionTipo extends Instruccion {
     public ejecutar(entorno: Entorno) {
         //variableTipo es una variable que nos devuelve la variable a la que queremos asignar sin los valores
         let variableTipo = entorno.getVar(this.idVariable);
+        let plantillaType = entorno.getType(this.idTipo);
+        let listaAtributos: Map<string, Simbolo> = new Map();
+
+        //PREGUNTAR SI EL VALOR ES NULO SI ES ASI ENTONCES NO HAY QUE HACER NADA EN TODO EL METODO 
+        
+        for (const atributo of plantillaType.atributos) { //atributo devuelve un arreglo en cuya posicion 0 esta la clave y en la 1 esta el valor
+            let idTipo = '';
+            if (atributo[1].tipo == Tipo.TYPE) {
+                idTipo = atributo[1].idTipo;
+            }
+            listaAtributos.set(atributo[1].id, new Simbolo(null, atributo[1].id, atributo[1].tipo, 'let', idTipo));
+        }
+
+        variableTipo.valor = new Type_(listaAtributos);
+        
 
         if (variableTipo == null) {
             throw new Error_(this.linea, this.columna, 'Semantico', 'Error el variable especificada');

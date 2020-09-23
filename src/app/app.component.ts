@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { parser } from '../interprete/Grammar/Grammar.js';
 import { Entorno } from '../interprete/Simbolo/Entorno';
-import { cuadro_texto } from "../interprete/Abstracto/Retorno";
+import { cuadro_texto, prueba } from "../interprete/Abstracto/Retorno";
 import { errores } from '../interprete/Errores/Errores';
 import "codemirror/lib/codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/hint/javascript-hint";
 import { Error_ } from 'src/interprete/Errores/Error.js';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
@@ -18,10 +20,12 @@ import { Error_ } from 'src/interprete/Errores/Error.js';
 export class AppComponent {
 
   title = 'interprete-web';
-  entrada = "";
+  entrada = prueba.prueba;
   traduccion = "";
   consola_salida = ""
+  constructor(private router:Router){
 
+  }
   options_entrada: any = {
     lineNumbers: true,
     theme: 'dracula',
@@ -65,9 +69,8 @@ export class AppComponent {
       }
     }
     this.imprimirErrores();
-
   }
-
+  
   public imprimirErrores() {
     for (const err of errores) {
       this.consola_salida = this.consola_salida + "-----------------------**** ERROR ****-----------------------------------------\n";
@@ -76,6 +79,15 @@ export class AppComponent {
     }
     this.consola_salida = this.consola_salida + cuadro_texto.salida;
   }
+
+
+  public reportes(){
+    
+    this.router.navigate(['/reportes']);
+  
+  }
+
+
 
 }
 

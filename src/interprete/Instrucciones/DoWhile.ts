@@ -4,6 +4,8 @@ import { Entorno } from "../Simbolo/Entorno";
 import { Tipo } from '../Abstracto/Retorno';
 import { Error_ } from "../Errores/Error";
 import { errores } from '../Errores/Errores';
+import { Break } from './Break';
+import { Continue } from './Continue';
 
 export class DoWhile extends Instruccion{
 
@@ -18,7 +20,7 @@ export class DoWhile extends Instruccion{
     }
 
     public ejecutar(entorno : Entorno) {
-
+        entorno.setBanderaCiclo(true);
         let resCondicion=this.condicion.ejecutar(entorno);
         if(resCondicion.tipo != Tipo.BOOLEAN){
             throw new Error_(this.linea, this.columna, 'Semantico', 'Error en Do while: La condicion debe ser booleana.');
@@ -27,6 +29,14 @@ export class DoWhile extends Instruccion{
         do{
             try{
                 const resultado=this.instrucciones.ejecutar(entorno);
+                if(resultado instanceof Break){
+                    //entorno.setBanderaCiclo(false);
+                    break;
+                }
+                if(resultado instanceof Continue){
+                    //entorno.setBanderaCiclo(false);
+                    //continue;
+                } 
             }catch(error){
                 errores.push(error);
             }
@@ -35,6 +45,6 @@ export class DoWhile extends Instruccion{
                 throw new Error_(this.linea, this.columna, 'Semantico', 'Error en Do while: La condicion debe ser booleana.');
             }
         }while(resCondicion.valor);
-
+        entorno.setBanderaCiclo(false);
     }
 }

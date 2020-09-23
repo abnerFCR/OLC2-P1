@@ -3,6 +3,8 @@ import { Expresion } from "../Abstracto/Expresion";
 import { Entorno } from "../Simbolo/Entorno";
 import { Tipo } from '../Abstracto/Retorno';
 import { Error_ } from "../Errores/Error";
+import { Break } from './Break';
+import { Continue } from './Continue';
 
 export class If extends Instruccion{
 
@@ -23,12 +25,18 @@ export class If extends Instruccion{
         if(resCondicion.tipo != Tipo.BOOLEAN){
             throw new Error_(this.linea, this.columna, 'Semantico', 'La condicion debe ser booleana');
         }
-        
+        let respuesta;
         if(resCondicion.valor){
-            this.instruccionesSisi.ejecutar(entorno);
+            respuesta = this.instruccionesSisi.ejecutar(entorno);
         }else{
-            this.instruccionesSino?.ejecutar(entorno);
+            respuesta = this.instruccionesSino?.ejecutar(entorno);
         } 
+        if(respuesta instanceof Break){
+            return respuesta;
+        }
+        if(respuesta instanceof Continue){
+            return respuesta;
+        }
 
     }
 }
