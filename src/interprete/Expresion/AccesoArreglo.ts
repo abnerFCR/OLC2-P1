@@ -41,6 +41,7 @@ export class AccesoArreglo extends Expresion {
             if (varArreglo?.valor instanceof Arreglo) {
                 let posicion = this.indice.ejecutar(entorno);
                 if (posicion.tipo == Tipo.NUMBER) {
+                    posicion.valor = Math.round(posicion.valor);
                     if (this.funcion != '') {
                         if (this.funcion == '.length' && varArreglo.valor.getElemento(posicion.valor).valor instanceof Arreglo) {
                             return { valor: varArreglo.valor.getElemento(posicion.valor).valor.getLength(), tipo: Tipo.NUMBER };
@@ -78,6 +79,7 @@ export class AccesoArreglo extends Expresion {
                 if (valor instanceof Arreglo) {
                     let posicion = this.indice.ejecutar(entorno);
                     if (posicion.tipo == Tipo.NUMBER) {
+                        posicion.valor = Math.round(posicion.valor);
                         if (this.funcion != '') {
                             if (this.funcion == '.length' && valor.getElemento(posicion.valor).valor instanceof Arreglo) {
                                 return { valor: valor.getElemento(posicion.valor).valor.getLength(), tipo: Tipo.NUMBER };

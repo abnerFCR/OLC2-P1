@@ -45,8 +45,10 @@ escapechar [\'\"\\bfnrtv]
 escape \\{escapechar}
 acceptedquote [^\"\\]+
 acceptedquote2 [^\'\\]+
+acceptedquote3 [^`\\]+
 string (\"({escape}|{acceptedquote})*\")
 string2 (\'({escape}|{acceptedquote2})*\')
+string3 (\`({escape}|{acceptedquote3})*\`)
 
 %%
 //TODO si falla algo que no se que es quitar el eof
@@ -60,6 +62,7 @@ string2 (\'({escape}|{acceptedquote2})*\')
 {number}                return 'NUMBER'
 {string}                return 'STRING'
 {string2}                return 'STRING2'
+{string3}                return 'STRING3'
 
 
 //SIMBOLOS ARITMETICOS, COMA, PUNTOCOMA
@@ -147,7 +150,7 @@ string2 (\'({escape}|{acceptedquote2})*\')
 %left '&&'
 %left '==', '!='
 %left '>=', '<=', '<', '>'
-%left '+' '-'
+%left '+' '-' 
 %left '*' '/' '%'
 %right '**'
 $right '!'
@@ -250,6 +253,10 @@ Instruccion
     {
         $$ = new Return($2,@1.first_line, @1.first_column);
     }
+    |'RETURN' ';'
+    {
+        $$ = new Return(new Literal(-1, @1.first_line, @1.first_column, 11),@1.first_line, @1.first_column);
+    }
     |AsigIndividual '=' Expr ';'
     {
         var s = eval('$$');
@@ -259,14 +266,23 @@ Instruccion
         s[indice-3].expresionNueva = $3;
         $$=$1;
     }
+    |AsigIndividual '=' '['']' ';'
+    {
+        var s = eval('$$');
+        var indice = s.length-1;
+        console.log("------------------------------------------------------------------>");
+        console.log(s[indice-3]);
+        s[indice-3].expresionNueva = null;
+        $$=$1;
+    }
     |error ';'
     {
-        error=new Error_(@1.first_line, @1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba');
+        error=new Error_(@1.first_line, @1.first_column, 'Sintactico','El caracter: " ' + yytext + ' ",  no se esperaba');
         errores.push(error);
     }
     |error '}'
     {
-        error=new Error_(@1.first_line,@1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba');
+        error=new Error_(@1.first_line,@1.first_column, 'Sintactico','El caracter: " ' + yytext + ' ",  no se esperaba');
         errores.push(error);
     }
     
@@ -308,7 +324,7 @@ Funcion
 ;
 
 ListaParametros
-    :ElementoDeclaracion ListaParametrosPrima
+    :ElementoParametro ListaParametrosPrima
     {
         //console.log("Que paso");
         var s = eval('$$');
@@ -323,7 +339,7 @@ ListaParametros
 ;
 
 ListaParametrosPrima
-    : ',' ElementoDeclaracion ListaParametrosPrima
+    : ',' ElementoParametro ListaParametrosPrima
     {
         var s = eval('$$');
         var indice = s.length - 1;
@@ -335,6 +351,22 @@ ListaParametrosPrima
         $$= s[indice]; 
     }
     |{}
+;
+
+ElementoParametro
+    :ElementoDeclaracion
+    {
+        $$=$1;
+    }
+    |ID ':' Tipos ListaCorh
+    {
+        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.ARRAY, $3, null);
+    }
+;
+
+ListaCorh
+    :ListaCorh '['']'
+    |'['']'
 ;
 
 TiposFuncion
@@ -357,9 +389,14 @@ TiposFuncion
 ;
 
 Imprimir
-    : CONSOLELOG '(' Expr ')' ';'
+    :CONSOLELOG '(' ListaExpr ')' ';'
     {
         $$ = new Imprimir($3, @1.first_line, @1.first_column);
+    /* CONSOLELOG '(' Expr ')' ';'
+    {
+        $$ = new Imprimir($3, @1.first_line, @1.first_column);
+    }
+    |*/
     }
 ;
 
@@ -545,6 +582,7 @@ ElementoDeclaracion
     }
 ;
 
+
 ListaValoresTipo
     :ListaValoresTipo ',' ValorType
     {
@@ -641,6 +679,10 @@ ListaDimensiones
         $$=new Simbolo(new Arreglo([$1],s[indice -2].valor.tipo), s[indice - 2].id, Tipo.ARRAY, s[indice-2].tipoSimbolo,s[indice-2].valor.tipo.idTipo);
     } 
     |'LET' ID ':' Tipos '[' ']'
+    {
+        $$=new Simbolo(new Arreglo([], $4), $2, Tipo.ARRAY, $1 ,$4.idTipo);
+    }
+    |'CONST' ID ':' Tipos '[' ']'
     {
         $$=new Simbolo(new Arreglo([], $4), $2, Tipo.ARRAY, $1 ,$4.idTipo);
     }
@@ -793,6 +835,10 @@ F   : '(' Expr ')'
         $$ = new Literal($1, @1.first_line, @1.first_column, 2);
     }
     | STRING2
+    {
+        $$ = new Literal($1, @1.first_line, @1.first_column, 2);
+    }
+    | STRING3
     {
         $$ = new Literal($1, @1.first_line, @1.first_column, 2);
     }
@@ -1025,14 +1071,18 @@ InstruccionFuncion
     {
         $$ = new Return($2,@1.first_line, @1.first_column);
     }
+    |'RETURN' ';'
+    {
+        $$ = new Return(new Literal(-1, @1.first_line, @1.first_column, 11),@1.first_line, @1.first_column);
+    }
     |error ';'
     {
-        error=new Error_(@1.first_line, @1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba(Una instruccion no pertenece a la funcion)');
+        error=new Error_(@1.first_line, @1.first_column, 'Sintactico','El caracter: " ' + yytext + ' ",  no se esperaba(Una instruccion no pertenece a la funcion)');
         errores.push(error);
     }
     |error '}'
     {
-        error=new Error_(@1.first_line,@1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba (Una instruccion no pertenece a la funcion)');
+        error=new Error_(@1.first_line,@1.first_column, 'Sintactico','El caracter: " ' + yytext + ' ",  no se esperaba (Una instruccion no pertenece a la funcion)');
         errores.push(error);
     }
     

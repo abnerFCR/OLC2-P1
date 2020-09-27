@@ -24,6 +24,8 @@ export class Literal extends Expresion{
             return {valor : v, tipo : Tipo.BOOLEAN};
         }else if(this.tipo == 4){
             return {valor:null, tipo:Tipo.NULL}
+        }else if(this.tipo == 11){
+            return {valor:null, tipo:Tipo.VOID}
         }
     }
 }

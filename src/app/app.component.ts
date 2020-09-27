@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { parser } from '../interprete/Grammar/Grammar.js';
+//import { parser2 } from '../interprete/Grammar/Grammar2.js';
 import { Entorno } from '../interprete/Simbolo/Entorno';
 import { cuadro_texto, prueba } from "../interprete/Abstracto/Retorno";
 import { errores } from '../interprete/Errores/Errores';
@@ -10,6 +11,7 @@ import "codemirror/addon/hint/javascript-hint";
 import { Error_ } from 'src/interprete/Errores/Error.js';
 import { Router } from '@angular/router';
 import { Funcion } from 'src/interprete/Instrucciones/Funcion';
+import { TranslationWidth } from '@angular/common';
 
 
 @Component({
@@ -88,7 +90,41 @@ export class AppComponent {
   
   }
 
+  public traducir(){
+    errores.length = 0;
+    const env = new Entorno(null);
+    this.consola_salida = "";
+    cuadro_texto.salida = "";
+    cuadro_texto.simbolos =[];
+    const ast = parser.parse(this.entrada.toString());
+    
+    for(const instr of ast){
+      try{
+        if(instr instanceof Funcion){
+          instr.ejecutar(env);
+        }
+      }catch{
+        errores.push();
+      }
+    }
+    console.log(env);
 
+    for (const instr of ast) {
+      try {
+        if(instr instanceof Funcion){
+          
+        }else{
+          instr.ejecutar(env);
+        }
+      } catch (error) {
+        errores.push(error);
+      }
+    }
+    console.log(env);
+    this.traduccion = this.entrada;
+    //this.imprimirErrores();
+
+  }
   
   public imprimirErrores() {
     for (const err of errores) {

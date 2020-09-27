@@ -26,15 +26,20 @@ export class AsignacionArreglo extends Instruccion{
                     this.valores[i] = new Simbolo(resultadoArreglo,this.arreglo.id,this.arreglo.tipo,this.arreglo.tipoSimbolo, this.arreglo.idTipo);
                     //this.valores[i] = resultadoArreglo;
                 } else {
-                    let resultado = this.valores[i].ejecutar(entorno);
-                    //console.log(resultado);
-                    if (resultado.tipo != this.arreglo.valor.tipo.tipo) {
-                        throw new Error_(this.linea, this.columna, "Semantico", "El tipo de dato a insertar debe coincidir con el tipo de dato del arreglo.");
+                    if(this.valores[i] instanceof Simbolo){
+                        arregloAux.push(this.valores[i]);
+                    }else{
+                        let resultado = this.valores[i].ejecutar(entorno);
+                        //console.log(resultado);
+                        if (resultado.tipo != this.arreglo.valor.tipo.tipo) {
+                            throw new Error_(this.linea, this.columna, "Semantico", "El tipo de dato a insertar debe coincidir con el tipo de dato del arreglo.");
+                        }
+                        let nuevoSimbolo = new Simbolo(resultado.valor, this.arreglo.id, resultado.tipo, 'let', '');
+                        bandera = true;
+                        this.valores[i] = nuevoSimbolo; 
+                        arregloAux.push(nuevoSimbolo);
                     }
-                    let nuevoSimbolo = new Simbolo(resultado.valor, this.arreglo.id, resultado.tipo, 'let', '');
-                    bandera = true;
-                    this.valores[i] = nuevoSimbolo; 
-                    arregloAux.push(nuevoSimbolo);
+
                 }
             }
 

@@ -31,6 +31,7 @@ export class AsignacionIndArreglo extends Expresion {
             if (varArreglo?.valor instanceof Arreglo) {
                 let posicion = this.indice.ejecutar(entorno);
                 if (posicion.tipo == Tipo.NUMBER) {
+                    posicion.valor = Math.round(posicion.valor);
                     if (this.funcion != '') {
                         /*
                         if (this.funcion == '.push' && varArreglo.valor.getElemento(posicion.valor).valor instanceof Arreglo) {
@@ -83,6 +84,7 @@ export class AsignacionIndArreglo extends Expresion {
                 if (valor instanceof Arreglo) {
                     let posicion = this.indice.ejecutar(entorno);
                     if (posicion.tipo == Tipo.NUMBER) {
+                        posicion.valor = Math.round(posicion.valor);
                         if (this.funcion != '') {
                             if (this.funcion == '.push') {
                                 /*

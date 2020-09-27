@@ -33,9 +33,11 @@ export class Llamada extends Instruccion {
         let nuevoEntorno: Entorno | null = new Entorno(entorno.getGlobal());
         for (let i = 0; i < funcion.parametros.length; i++) {
             let expresionActual = this.expresiones[i].ejecutar(entorno);
+            //console.log("Expresion Actual");
+            //console.log(expresionActual);
             if (funcion.parametros[i].tipo == expresionActual.tipo) {
                 if (funcion.parametros[i].tipo == Tipo.ARRAY) {
-                    //console.log(expresionActual);
+                    nuevoEntorno.guardar(funcion.parametros[i].id, expresionActual.valor,expresionActual.tipo,'let',funcion.parametros[i].idTipo,this.linea,this.columna);
                 } else if (funcion.parametros[i].tipo == Tipo.TYPE) {
 
                     //console.log(expresionActual);

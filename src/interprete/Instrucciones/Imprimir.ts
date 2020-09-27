@@ -7,16 +7,26 @@ import { Entorno } from "../Simbolo/Entorno";
 
 export class Imprimir extends Instruccion{
 
-    constructor(private valor : Expresion, linea : number, columna : number){
+    constructor(private valor : Expresion|Array<Expresion>, linea : number, columna : number){
         super(linea, columna);
     }
 
     public ejecutar(entorno : Entorno) {
-        const valor = this.valor.ejecutar(entorno);
-        cuadro_texto.salida=cuadro_texto.salida+valor.valor+'\n';
+        if(this.valor instanceof Expresion){
+            const valor = this.valor.ejecutar(entorno);
+            cuadro_texto.salida=cuadro_texto.salida+valor.valor+'\n';
+        
+        }else{
+            for(const valor of this.valor){
+                const res = valor.ejecutar(entorno);
+                cuadro_texto.salida=cuadro_texto.salida+res.valor;
+        
+            }
+            cuadro_texto.salida = cuadro_texto.salida +'\n';
+        }
         //cuadro_texto.salida=cuadro_texto.salida+valor.valor;
         //console.log(entorno);
-        return valor;
+        //return valor;
     }
 }
 
