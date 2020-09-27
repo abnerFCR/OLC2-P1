@@ -57,13 +57,13 @@ export class AppComponent {
     const env = new Entorno(null);
     this.consola_salida = "";
     cuadro_texto.salida = "";
-
+    cuadro_texto.simbolos =[];
     const ast = parser.parse(this.entrada.toString());
 
     for (const instr of ast) {
       try {
         instr.ejecutar(env);
-
+        
       } catch (error) {
         errores.push(error);
       }

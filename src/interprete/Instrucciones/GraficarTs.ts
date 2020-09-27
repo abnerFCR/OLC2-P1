@@ -14,7 +14,7 @@ export class GraficarTs extends Instruccion {
             let i = 1;
             for (const elemento of entornoPivote.variables) {
                 let varActual:Simbolo = elemento[1];
-                console.log(varActual);
+                //console.log(varActual);
                 cuadro_texto.salida = cuadro_texto.salida+'\n'+i+'\t\t\t|'+ varActual.id+ '\t\t\t\t\t\t\t|'+varActual.tipoSimbolo+'\t\t\t\t\t\t|'+
                                     this.tiposString[varActual.tipo]+'\t\t\t\t|'+varActual.valor;
                 i++;

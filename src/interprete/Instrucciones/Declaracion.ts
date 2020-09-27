@@ -83,12 +83,12 @@ export class Declaracion extends Instruccion {
         let nuevaVariableTipo = new Type_(listaAtributos);
         */
         entorno.guardar(declaracion.id, null, Tipo.TYPE, 'let', declaracion.idTipo, this.linea, this.columna);
-        console.log("Declaracion");
-        console.log(entorno);
+        //console.log("Declaracion");
+        //console.log(entorno);
 
         //declaracion.valor en este caso tiene una lista de valores ya que es un type
         if (declaracion.valor != null) {
-            if(declaracion.valor.tipo != Tipo.NULL){
+            if(declaracion.valor.tipo != 4){ //Tipo.NULL pero como declaracion.valor es un literal cuando es null entonces hay que hacerlo de esta forma. con 4
                 let asignacion = new AsignacionTipo(declaracion.id, declaracion.idTipo, declaracion.valor, this.linea, this.columna);
                 asignacion.ejecutar(entorno);
             }

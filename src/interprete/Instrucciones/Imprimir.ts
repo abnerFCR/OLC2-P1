@@ -14,6 +14,8 @@ export class Imprimir extends Instruccion{
     public ejecutar(entorno : Entorno) {
         const valor = this.valor.ejecutar(entorno);
         cuadro_texto.salida=cuadro_texto.salida+valor.valor+'\n';
+        //cuadro_texto.salida=cuadro_texto.salida+valor.valor;
+        //console.log(entorno);
         return valor;
     }
 }

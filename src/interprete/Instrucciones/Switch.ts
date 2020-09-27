@@ -4,6 +4,7 @@ import { Expresion } from '../Abstracto/Expresion';
 import { Caso } from '../Util/Caso';
 import { Break } from './Break';
 import { Continue } from './Continue';
+import { Return } from './Return';
 
 export class Switch extends Instruccion {
 
@@ -40,6 +41,10 @@ export class Switch extends Instruccion {
                         entorno.setBanderaSwitch(false);
                         return respuesta;
                     } 
+                    if(respuesta instanceof Return){
+                        entorno.setBanderaSwitch(false);
+                        return respuesta;
+                    }
                     banderaEncontrado = true;
                 }
             } else {

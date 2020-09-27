@@ -6,6 +6,7 @@ import { Error_ } from "../Errores/Error";
 import { errores } from '../Errores/Errores';
 import { Break } from './Break';
 import { Continue } from './Continue';
+import { Return } from './Return';
 
 export class While extends Instruccion{
 
@@ -37,6 +38,10 @@ export class While extends Instruccion{
                     //entorno.setBanderaCiclo(false);
                     //continue; //NO PUEDO PONER ESTE CONTINUE PORQUE FALTA QUE SE EJECUTE LA CONDICION. IGUAL ES CON EL DO WHILE
                 } 
+                if(resultado instanceof Return){
+                    entorno.setBanderaCiclo(false);
+                    return resultado;
+                }
                    
             } catch (error) {
                 errores.push(error);

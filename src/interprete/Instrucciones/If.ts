@@ -5,6 +5,7 @@ import { Tipo } from '../Abstracto/Retorno';
 import { Error_ } from "../Errores/Error";
 import { Break } from './Break';
 import { Continue } from './Continue';
+import { Return } from './Return';
 
 export class If extends Instruccion{
 
@@ -35,6 +36,9 @@ export class If extends Instruccion{
             return respuesta;
         }
         if(respuesta instanceof Continue){
+            return respuesta;
+        }
+        if(respuesta instanceof Return){
             return respuesta;
         }
 

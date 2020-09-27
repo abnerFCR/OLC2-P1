@@ -4,22 +4,31 @@
     const { Relacional, OperacionRelacional } = require('../Expresion/Relacional');
     const { Acceso } = require('../Expresion/Acceso');
     const { AccesoTipo } = require('../Expresion/AccesoTipo');
+    const { AccesoArreglo } = require('../Expresion/AccesoArreglo');
     const { Literal} = require('../Expresion/Literal');
     const { Imprimir } =require('../Instrucciones/Imprimir');
     const { GraficarTs } =require('../Instrucciones/GraficarTs');
     const { Break } =require('../Instrucciones/Break');
+    const { Return } =require('../Instrucciones/Return');
+    const { DeclaracionArreglo } =require('../Instrucciones/DeclaracionArreglo');
     const { Continue } =require('../Instrucciones/Continue');
     const { Switch } =require('../Instrucciones/Switch');
     const { If } = require('../Instrucciones/If');
     const { While } = require('../Instrucciones/While');
+    const { Arreglo } = require('../Objetos/Arreglo');
+    const { Simbolo } = require('../Simbolo/Simbolo');
     const { DoWhile } = require('../Instrucciones/DoWhile');
+    const { For } = require('../Instrucciones/For');
     const { IncreDecre } = require('../Instrucciones/IncreDecre');
     const { Statement} = require('../Instrucciones/Statement');
     const { Asignacion} = require('../Instrucciones/Asignacion');
+    const { AsignacionIndArreglo } = require('../Instrucciones/AsignacionIndArreglo');
     const { Tipo, cuadro_texto } =require("../Abstracto/Retorno");
     const { errores } =require('../Errores/Errores');
     const { Error_ } =require('../Errores/Error');
     const { Declaracion } = require('../Instrucciones/Declaracion');
+    const { Funcion } = require('../Instrucciones/Funcion');
+    const { Llamada } = require('../Instrucciones/Llamada');
     const { ElementoDeclaracion, TipoDeclaracion } = require('../Util/ElementoDeclaracion');
     const { Caso } = require('../Util/Caso');
     const { DeclaracionType } = require('../Instrucciones/DeclaracionType');
@@ -84,7 +93,7 @@ string (\"({escape}|{acceptedquote})*\")
 "]"                     return ']'
 
 ":"                     return ':'
-"."                     return '.'
+
 //PALABRAS RESERVADAS
 "if"                    return 'IF'
 "else"                  return 'ELSE'
@@ -104,8 +113,16 @@ string (\"({escape}|{acceptedquote})*\")
 "default"               return 'DEFAULT'
 "type"                  return 'TYPE'
 "null"                  return 'NULL'
-"break"                  return 'BREAK'
-"continue"                  return 'CONTINUE'
+"break"                 return 'BREAK'
+"continue"              return 'CONTINUE'
+"for"                   return 'FOR'
+"function"              return 'FUNCTION'
+"void"                  return "TIPOVOID"
+"return"                  return "RETURN"  
+".push"                 return 'PUSH'
+".pop"                  return 'POP'
+".length"               return 'LENGTH'
+"."                     return '.'
 
 ([a-zA-Z_])[a-zA-Z0-9_ñÑ]*	return 'ID';
 <<EOF>>		            return 'EOF'
@@ -128,6 +145,7 @@ string (\"({escape}|{acceptedquote})*\")
 %right '^'
 $right '!'
 %left '++' '--'
+
 
 %start Init
 
@@ -161,7 +179,7 @@ Instruccion
     {
         $$=$1;
     }
-    |AsignacionVariable
+    |AsignacionVariable ';'
     {
         $$=$1;
     }
@@ -201,24 +219,107 @@ Instruccion
     {
         $$ =new Continue(@1.first_line, @1.first_column);
     }
-    |error ';'  
+    |DeclaracionArreglos ';'
     {
-        //console.log("Error vino"+yytext+" vino "+ @1.first_line+" "+  @1.first_column, " se esperaba "+ (this.terminals_[symbol] || symbol));
-        //console.log($1);
-        error = new Error_(@1.first_line, @1.first_column, 'Sintactico', 'Error Sintactico: " ' + $1 + ' ",  no se esperaba');
-        errores.push(error);
-        $$="asdf";
+        $$=$1;
     }
-    |error '}'  
+    |ForNormal 
     {
-        //console.log("Error vino"+yytext+" vino "+ @1.first_line+" "+  @1.first_column, " se esperaba "+ (this.terminals_[symbol] || symbol));
-        //console.log($1);
-        error = new Error_(@1.first_line, @1.first_column, 'Sintactico', 'Error Sintactico: " ' + $1 + ' ",  no se esperaba');
+        $$=$1;
+    }
+    |Funcion 
+    {
+        $$=$1;
+    }
+    |ID '(' ListaExpr ')' ';'
+    {
+        $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+    }
+    |'RETURN' Expr ';'
+    {
+        $$ = new Return($2,@1.first_line, @1.first_column);
+    }
+    |AsigIndividual '=' Expr ';'
+    {
+        var s = eval('$$');
+        var indice = s.length-1;
+        console.log("------------------------------------------------------------------>");
+        console.log(s[indice-3]);
+        s[indice-3].expresionNueva = $3;
+        $$=$1;
+    }
+    |error ';'
+    {
+        error=new Error_(@1.first_line, @1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba');
         errores.push(error);
-        $$="asdf";
+    }
+    |error '}'
+    {
+        error=new Error_(@1.first_line,@1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba');
+        errores.push(error);
+    }
+    
+;
+
+Funcion
+    :'FUNCTION' ID '(' ListaParametros ')' ':' TiposFuncion StatementFuncion
+    {
+        //console.log("Soy el statement");
+        //console.log($8);
+        var s = eval('$$');
+        var ind = s.length - 1;
+        $$ = new Funcion(s[ind - 6], s[ind -4 ], s[ind-1],s[ind], @1.first_line, @1.first_column);
     }
 ;
 
+ListaParametros
+    :ElementoDeclaracion ListaParametrosPrima
+    {
+        //console.log("Que paso");
+        var s = eval('$$');
+        var indice = s.length - 1;
+        if(s[indice]==undefined){
+            $$ = [s[indice-1]];
+        }else{
+            s[indice].unshift(s[indice-1]);
+            $$ = s[indice];
+        }
+    }
+;
+
+ListaParametrosPrima
+    : ',' ElementoDeclaracion ListaParametrosPrima
+    {
+        var s = eval('$$');
+        var indice = s.length - 1;
+        if(s[indice] != undefined){
+            s[indice].unshift(s[indice-1]);
+        }else{
+            s[indice] = [s[indice-1]];
+        }
+        $$= s[indice]; 
+    }
+    |{}
+;
+
+TiposFuncion
+    :TipoNormal
+    {
+        $$=$1;
+    }
+    |'TIPOVOID'
+    {
+        $$=Tipo.VOID;
+    }
+    |ID
+    {
+        $$={tipo:Tipo.TYPE, idTipo:$1};
+    }
+    |'TIPOARRAY'
+    {
+        $$=Tipo.ARRAY;
+    }
+;
 
 Imprimir
     : CONSOLELOG '(' Expr ')' ';'
@@ -246,7 +347,7 @@ DeclaracionVariable
 ; 
 
 AsignacionVariable
-    : ID '=' Expr ';'
+    : ID '=' Expr 
     {
         $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
     }
@@ -285,6 +386,24 @@ DoWhileSt
     : 'DO' Statement 'WHILE' '(' Expr ')' ';'
     {
         $$ = new DoWhile($5, $2, @1.first_line, @1.first_column);
+    }
+;
+
+ForNormal
+    :'FOR' '(' DeclaracionVariable Expr ';' OpcAsignacion ')' Statement
+    {
+        $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column);
+    }
+;
+
+OpcAsignacion
+    :AsignacionVariable
+    {
+        $$ = $1;
+    }
+    |IncreDecre
+    {
+        $$= $1;
     }
 ;
 
@@ -459,44 +578,84 @@ DefinicionAtributo
     }
 ;
 
-
-
 DeclaracionArreglos
-    :'LET' ID ':' Tipos ListaDimensiones ';'
+    :ListaDimensiones '=' '[' ValoresArreglo ']'
     {
-        $$ = new DeclaracionArreglo($2, $4, $5,null,@1.first_line, @1.first_column);
+        $$=new DeclaracionArreglo($1, $4, @1.first_line,@1.first_column);
     }
-    |'LET' ID ':' ListaDimensiones ';'
+    |ListaDimensiones '=' '[' ListaExpr ']'
     {
-        $$= new DeclaracionArreglo();
-    }    
-    |'LET' ID '=' ListaDimensiones ';'
-    |'LET' ID ':' 'TIPO' ListaDimensiones '=' ValoresArreglo ';'
-    |'LET' ID ':' ListaDimensiones '=' ValoresArreglo ';'
-    |'LET' ID '=' ValoresArreglo ';'
+        $$=new DeclaracionArreglo($1,$4, @1.first_line,@1.first_column);
+    }
+    |ListaDimensiones '=' '['']'
+    {
+        $$=new DeclaracionArreglo($1,[],@1.first_line,@1.first_column);
+    }
+    |ListaDimensiones
+    {
+        $$=new DeclaracionArreglo($1,[],@1.first_line,@1.first_column);
+    }
 ;
 
 ListaDimensiones
     :ListaDimensiones '[' ']'
-    {
-        $$=new Simbolo(new Arreglo([$1],), '', Tipo.ARRAY, '');
+    {   
+        var s = eval('$$');
+        var indice = s.length-1;
+        console.log(s[indice-2]);
+        $$=new Simbolo(new Arreglo([$1],s[indice -2].valor.tipo), s[indice - 2].id, Tipo.ARRAY, s[indice-2].tipoSimbolo,s[indice-2].valor.tipo.idTipo);
     } 
-    |'LET' ID ':' Tipos '['']'
+    |'LET' ID ':' Tipos '[' ']'
     {
-        $$=new Simbolo(new Arreglo(null, $4), $2, Tipo.ARRAY, 'let');
+        $$=new Simbolo(new Arreglo([], $4), $2, Tipo.ARRAY, $1 ,$4.idTipo);
     }
-    |
 
+;
+
+ValoresArreglo
+    :ValoresArreglo ',' ValorArreglo
+    {
+        $1.push($3);
+        $$ = $1;
+        
+    }
+    |ValorArreglo
+    {
+        $$=[$1];
+    }
+;
+
+ValorArreglo
+    :'[' ListaExpr ']'
+    {
+        $$=$2;
+    }
+    |'[' ValoresArreglo ']'
+    {   
+        $$ = $2;
+    }
+;
+
+ListaExpr
+    :ListaExpr ',' Expr
+    {
+        $1.push($3);
+        $$=$1;
+    }
+    |Expr
+    {
+        $$=[$1];
+    }
 ;
 
 Tipos
     :TipoNormal
     {
-        $$=$1;
+        $$={tipo:$1, idTipo:''};
     }
     |ID
     {
-        $$=$1;
+        $$ = {tipo:Tipo.TYPE, idTipo:$1};
     }
 ;
 
@@ -607,17 +766,39 @@ F   : '(' Expr ')'
     {
         $$ = new Literal(false, @1.first_line, @1.first_column, 3);
     }
-    | ID
-    {
-        $$ = new Acceso($1, @1.first_line, @1.first_column);
-    }
-    |Accesos
+    |NuevoAcceso
     {
         $$ = $1;
     }
     |NULL 
     {
         $$ = new Literal($1, @1.first_line, @1.first_column,4);
+    }
+    |ID '(' ListaExpr ')' 
+    {
+        $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+    }
+    
+;
+
+NuevoAcceso
+    :Accesos
+    {
+        $$=$1;
+    }
+    |Acceso
+    {
+        $$=$1;
+    }
+    |ID FuncionArreglo
+    {
+        $$ = new AccesoArreglo($1,null,null,$2.funcion,$2.valor, @1.first_line, @1.first_column);
+    }
+;
+Acceso
+    :ID
+    {
+        $$ = new Acceso($1, @1.first_line, @1.first_column);
     }
 ;
 
@@ -628,22 +809,180 @@ Accesos
     }
     |Accesos '[' Expr ']'
     {
-
+        $$ = new AccesoArreglo('',$3,$1,'',null, @1.first_line, @1.first_column);
     }
-    |Accesos '.' ID '(' Parametros ')'
+    |Accesos '[' Expr ']' FuncionArreglo
     {
-
+        $$ = new AccesoArreglo('',$3,$1,$5.funcion,$5.valor, @1.first_line, @1.first_column);
     }
     |ID '.' ID 
     {
         $$ =  new AccesoTipo($1, $3, null, @1.first_line, @1.first_column);
     }
+    |ID '[' Expr ']' FuncionArreglo
+    {
+        $$ = new AccesoArreglo($1,$3,null,$5.funcion,$5.valor, @1.first_line, @1.first_column);
+    }
     |ID '[' Expr ']'
     {
-
+        $$ = new AccesoArreglo($1,$3,null,'',null, @1.first_line, @1.first_column);
     }
-    |ID '.' ID '(' Parametros ')'
+    
+;
+
+FuncionArreglo
+    :'POP' '(' ')' 
     {
-
+        $$={funcion:$1, valor:null};
     }
+    |'PUSH' '(' Expr ')'
+    {
+        $$={funcion:$1, valor:$3};
+    }
+    |'LENGTH'
+    {
+        $$={funcion:$1, valor:null};
+    }
+;
+
+
+AsigIndividual
+    :AsigIndividual '[' Expr ']' 
+    {
+        $$ = new AsignacionIndArreglo('',$3,$1,'',null, @1.first_line, @1.first_column);
+    }
+    |ID '[' Expr ']'
+    {
+        $$ = new AsignacionIndArreglo($1,$3,null,'',null, @1.first_line, @1.first_column);
+    }
+;
+
+StatementFuncion
+    : '{' InstruccionesFuncion '}' 
+    {
+        $$ = new Statement($2, @1.first_line, @1.first_column);
+    }
+    | '{' '}' 
+    {
+        $$ = new Statement(new Array(), @1.first_line, @1.first_column);
+    }
+;
+
+InstruccionesFuncion
+    :InstruccionFuncion InstruccionesFuncionPrima
+    {
+        //console.log("Que paso");
+        var s = eval('$$');
+        var indice = s.length - 1;
+        if(s[indice]==undefined){
+            $$ = [s[indice-1]];
+        }else{
+            s[indice].unshift(s[indice-1]);
+            $$ = s[indice];
+        }
+        
+    }
+;
+InstruccionesFuncionPrima
+    :InstruccionFuncion InstruccionesFuncionPrima
+    {
+        var s = eval('$$');
+        var indice = s.length - 1;
+        if(s[indice] != undefined){
+            s[indice].unshift(s[indice-1]);
+        }else{
+            s[indice] = [s[indice-1]];
+        }
+        $$= s[indice];  
+    }
+    |
+    {
+    }
+;
+
+InstruccionFuncion
+    : Imprimir
+    {
+        $$=$1;
+    }
+    |DeclaracionVariable
+    {
+        $$=$1;
+    }
+    |AsignacionVariable ';'
+    {
+        $$=$1;
+    }
+    |IfSt
+    {
+        $$=$1;
+    }
+    |WhileSt
+    {
+        $$=$1;
+    }
+    |DoWhileSt
+    {
+        $$=$1;
+    }
+    |SwitchSt
+    {
+        $$=$1;
+    }
+    |IncreDecre ';'
+    {
+        $$=$1;
+    }
+    |DefinicionTypes ';'
+    {
+        $$=$1;
+    }
+    |GraficarTs ';'
+    {
+        $$ =$1;
+    }
+    |'BREAK' ';'
+    {
+        $$ =new Break(@1.first_line, @1.first_column);
+    }
+    |'CONTINUE' ';'
+    {
+        $$ =new Continue(@1.first_line, @1.first_column);
+    }
+    |DeclaracionArreglos ';'
+    {
+        $$=$1;
+    }
+    |ForNormal 
+    {
+        $$=$1;
+    }
+    |ID '(' ListaExpr ')' ';'
+    {
+        $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+    }
+    |AsigIndividual '=' Expr ';'
+    {
+        var s = eval('$$');
+        var indice = s.length-1;
+        console.log("------------------------------------------------------------------>");
+        console.log(s[indice-3]);
+        s[indice-3].expresionNueva = $3;
+        $$=$1;
+    }
+    |'RETURN' Expr ';'
+    {
+        $$ = new Return($2,@1.first_line, @1.first_column);
+    }
+    |error ';'
+    {
+        error=new Error_(@1.first_line, @1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba(Una instruccion no pertenece a la funcion)');
+        errores.push(error);
+    }
+    |error '}'
+    {
+        error=new Error_(@1.first_line,@1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba (Una instruccion no pertenece a la funcion)');
+        errores.push(error);
+    }
+    
 ;

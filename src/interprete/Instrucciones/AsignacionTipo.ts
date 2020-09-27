@@ -37,6 +37,7 @@ export class AsignacionTipo extends Instruccion {
             listaAtributos.set(atributo[1].id, new Simbolo(null, atributo[1].id, atributo[1].tipo, 'let', idTipo));
         }
 
+
         variableTipo.valor = new Type_(listaAtributos);
         
 
@@ -66,7 +67,14 @@ export class AsignacionTipo extends Instruccion {
                         return; //----->este return puede ser reemplazado
                     }
                     const valorAtributo = atributoValor.valor.ejecutar(entorno);
+                    //---------------------------------
+                    if(valorAtributo.tipo ==Tipo.NULL){
+                        if(variableTipo.valor.getAtributo(atributoValor.id).tipo == Tipo.TYPE){
+                            continue;
+                        }
+                    }
 
+                    //---------------------------------
                     if (valorAtributo.tipo == variableTipo.valor.getAtributo(atributoValor.id).tipo) {
                         variableTipo.valor.atributos.get(atributoValor.id).valor = valorAtributo.valor;
                     } else {
@@ -88,7 +96,7 @@ export class AsignacionTipo extends Instruccion {
             respuesta.setColumna(this.columna);
             throw respuesta;
         }
-
+        console.table(entorno);
     }
 
 }

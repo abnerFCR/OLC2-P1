@@ -3,6 +3,7 @@ import { Entorno } from "../Simbolo/Entorno";
 import { errores } from "../Errores/Errores";
 import { Break } from './Break';
 import { Continue } from './Continue';
+import { Return } from './Return';
 
 export class Statement extends Instruccion {
 
@@ -20,6 +21,9 @@ export class Statement extends Instruccion {
                     return elemento;
                 }
                 if (elemento instanceof Continue) {
+                    return elemento;
+                }
+                if(elemento instanceof Return){
                     return elemento;
                 }
 

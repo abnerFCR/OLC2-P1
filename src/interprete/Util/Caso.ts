@@ -6,6 +6,7 @@ import { Retorno } from '../Abstracto/Retorno';
 import { errores } from '../Errores/Errores';
 import { Break } from '../Instrucciones/Break';
 import { Continue } from '../Instrucciones/Continue';
+import { Return } from '../Instrucciones/Return';
 
 export class Caso extends Instruccion{
     
@@ -33,6 +34,9 @@ export class Caso extends Instruccion{
                         return respuesta;
                     }
                     if(respuesta instanceof Continue){
+                        return respuesta;
+                    }
+                    if(respuesta instanceof Return){
                         return respuesta;
                     }
                 }catch(error){

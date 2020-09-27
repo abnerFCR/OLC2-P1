@@ -3,12 +3,15 @@ import { cuadro_texto, Tipo } from "../Abstracto/Retorno";
 import { Error_ } from '../Errores/Error';
 import { errores } from '../Errores/Errores';
 import { Type_ } from '../Objetos/Type_';
+import { Funcion } from '../Instrucciones/Funcion';
 
 export class Entorno {
 
     public variables: Map<string, Simbolo>;
     
     private types: Map<string, Type_>;
+
+    private funciones:Map<string,Funcion>;
 
     public banderaCiclo:boolean[]=new Array();
     public banderaSwitch:boolean[]=new Array();
@@ -17,6 +20,7 @@ export class Entorno {
     constructor(public anterior: Entorno | null) {
         this.variables = new Map();
         this.types = new Map();
+        this.funciones = new Map();
     }
 
     //TODO NOTIFICAR ERROR EN FORMA QUE SE INSERTA EN EL AMBITO
@@ -41,6 +45,14 @@ export class Entorno {
         //errores.push(nuevoError);
     }
 
+    public guardarFunciones(nombre:string, funcion:Funcion, fila:number, columna:number){
+        let entorno:Entorno|null =this;
+        if(!entorno.funciones.has(nombre)){
+            entorno.funciones.set(nombre, funcion);
+            return;
+        }
+        throw new Error_(fila, columna, "Semantico", "Ya existe un nombre que hace referencia a esa funcion.");
+    }
 
     public getVar(id: string): Simbolo | undefined | null {
         let entorno: Entorno | null = this;
@@ -65,6 +77,24 @@ export class Entorno {
             entorno=entorno.anterior;
         }
         return null;
+    }
+
+    public getFuncion(id:string, fila, columna){
+        let entorno:Entorno|null = this;
+        while(entorno != null){
+            if(entorno.funciones.has(id)){
+                return entorno.funciones.get(id);
+            }
+            entorno = entorno.anterior;
+        }
+        throw new Error_(fila, columna, "Semantico", "La funcion indicada no existe.");
+    }
+    public getGlobal(){
+        let entorno:Entorno|null =this;
+        while(entorno.anterior !=null){
+            entorno = entorno.anterior;
+        }
+        return entorno;
     }
 
     public updateVar(id: string, valor: any, tipo: Tipo,idTipo:string, fila:number, columna:number): any {
