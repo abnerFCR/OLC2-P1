@@ -1,4 +1,5 @@
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
+import { environment } from 'src/environments/environment';
 import { Expresion } from '../Abstracto/Expresion';
 import { Instruccion } from '../Abstracto/Instruccion';
 import { Tipo } from '../Abstracto/Retorno';
@@ -24,38 +25,43 @@ export class Llamada extends Instruccion {
     public ejecutar(entorno: Entorno) {
         let funcion = entorno.getFuncion(this.nombre, this.linea, this.columna);
         //console.log("Ejecutando Llamada a metodo");
+
+
         if (funcion.parametros.length != this.expresiones.length) {
             throw new Error_(this.linea, this.columna, "Semantico", "El numero de parametros que se indican es incorrecto.");
         }
-        let nuevoEntorno:Entorno|null = new Entorno(entorno.getGlobal());
+        let nuevoEntorno: Entorno | null = new Entorno(entorno.getGlobal());
         for (let i = 0; i < funcion.parametros.length; i++) {
             let expresionActual = this.expresiones[i].ejecutar(entorno);
             if (funcion.parametros[i].tipo == expresionActual.tipo) {
                 if (funcion.parametros[i].tipo == Tipo.ARRAY) {
                     //console.log(expresionActual);
                 } else if (funcion.parametros[i].tipo == Tipo.TYPE) {
-                    
-                   //console.log(expresionActual);
+
+                    //console.log(expresionActual);
                 } else {
-                    nuevoEntorno.guardar(funcion.parametros[i].id,expresionActual.valor,expresionActual.tipo,'let','',this.linea,this.columna);
+                    nuevoEntorno.guardar(funcion.parametros[i].id, expresionActual.valor, expresionActual.tipo, 'let', '', this.linea, this.columna);
                     //console.log(nuevoEntorno);
                 }
-            }else{
+            } else {
                 throw new Error_(this.linea, this.columna, "Semantico", "El tipo de dato en los parametros no coincide con la funcion origen.");
             }
         }
+        
+       //TODO banderas de las variables del entorno para ciclos y switch
         try {
             let respuesta = funcion.instrucciones.ejecutar(nuevoEntorno);
-            if(respuesta instanceof Return){
-                if(respuesta.expresion.tipo == funcion.tipoRetorno){
+            if (respuesta instanceof Return) {
+                if (respuesta.expresion.tipo == funcion.tipoRetorno) { 
                     return respuesta.expresion;
                 }
                 throw new Error_(this.linea, this.columna, "Semantico", "La funcion no puede retornar un tipo de dato diferente al definido");
             }
         } catch (error) {
+
             errores.push(error);
         }
-
+   
         //console.log("Finalizando Llamada a metodo");
     }
 

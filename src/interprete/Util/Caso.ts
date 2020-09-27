@@ -26,6 +26,9 @@ export class Caso extends Instruccion{
             if(respuesta instanceof Break){
                 return respuesta;
             }
+            if(respuesta instanceof Return){
+                return respuesta;
+            }
         }else{
             for(const instr of this.listaInstrucciones){
                 try{

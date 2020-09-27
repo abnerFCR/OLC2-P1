@@ -4,6 +4,7 @@
     const { Relacional, OperacionRelacional } = require('../Expresion/Relacional');
     const { Acceso } = require('../Expresion/Acceso');
     const { AccesoTipo } = require('../Expresion/AccesoTipo');
+    const { Ternario } = require('../Expresion/Ternario');
     const { AccesoArreglo } = require('../Expresion/AccesoArreglo');
     const { Literal} = require('../Expresion/Literal');
     const { Imprimir } =require('../Instrucciones/Imprimir');
@@ -43,7 +44,9 @@ identificador [a-zA-Z]([a-zA-Z]|[0-9])*
 escapechar [\'\"\\bfnrtv]
 escape \\{escapechar}
 acceptedquote [^\"\\]+
+acceptedquote2 [^\'\\]+
 string (\"({escape}|{acceptedquote})*\")
+string2 (\'({escape}|{acceptedquote2})*\')
 
 %%
 //TODO si falla algo que no se que es quitar el eof
@@ -56,9 +59,11 @@ string (\"({escape}|{acceptedquote})*\")
 {decimal}               return 'DECIMAL'
 {number}                return 'NUMBER'
 {string}                return 'STRING'
+{string2}                return 'STRING2'
 
 
 //SIMBOLOS ARITMETICOS, COMA, PUNTOCOMA
+"**"                     return '**'
 "*"                     return '*'
 "/"                     return '/'
 ";"                     return ';'
@@ -80,6 +85,7 @@ string (\"({escape}|{acceptedquote})*\")
 "||"                  return '||'
 "&&"                  return '&&'
 "!"                   return '!'
+"?"                     return '?'
 
 //SIMBOLOS DE ASIGNACION
 "="                   return '='
@@ -136,13 +142,14 @@ string (\"({escape}|{acceptedquote})*\")
 
 /lex
 
+%left '?'
 %left '||'
 %left '&&'
 %left '==', '!='
 %left '>=', '<=', '<', '>'
 %left '+' '-'
 %left '*' '/' '%'
-%right '^'
+%right '**'
 $right '!'
 %left '++' '--'
 
@@ -235,6 +242,10 @@ Instruccion
     {
         $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
     }
+    |ID '('')' ';'
+    {
+        $$ =new Llamada($1, [], @1.first_line, @1.first_column);
+    }
     |'RETURN' Expr ';'
     {
         $$ = new Return($2,@1.first_line, @1.first_column);
@@ -269,6 +280,30 @@ Funcion
         var s = eval('$$');
         var ind = s.length - 1;
         $$ = new Funcion(s[ind - 6], s[ind -4 ], s[ind-1],s[ind], @1.first_line, @1.first_column);
+    }
+    |'FUNCTION' ID '(' ListaParametros ')' StatementFuncion
+    {
+        //console.log("Soy el statement");
+        //console.log($8);
+        var s = eval('$$');
+        var ind = s.length - 1;
+        $$ = new Funcion(s[ind - 4], s[ind -2 ], Tipo.VOID,s[ind], @1.first_line, @1.first_column);
+    }
+    |'FUNCTION' ID '(' ')' ':' TiposFuncion StatementFuncion
+    {
+        //console.log("Soy el statement");
+        //console.log($8);
+        var s = eval('$$');
+        var ind = s.length - 1;
+        $$ = new Funcion(s[ind - 5], [], s[ind-1],s[ind], @1.first_line, @1.first_column);
+    }
+    |'FUNCTION' ID '(' ')' StatementFuncion
+    {
+        //console.log("Soy el statement");
+        //console.log($8);
+        var s = eval('$$');
+        var ind = s.length - 1;
+        $$ = new Funcion(s[ind - 3], [], Tipo.VOID, s[ind], @1.first_line, @1.first_column);
     }
 ;
 
@@ -676,7 +711,7 @@ Expr
     {
         $$ = new Aritmetica($1, $3, OperacionAritmetica.DIVISION, @1.first_line,@1.first_column);
     }
-    | Expr '^' Expr
+    | Expr '**' Expr
     {
         $$ = new Aritmetica($1, $3, OperacionAritmetica.POTENCIA, @1.first_line,@1.first_column);
     }
@@ -757,6 +792,10 @@ F   : '(' Expr ')'
     {
         $$ = new Literal($1, @1.first_line, @1.first_column, 2);
     }
+    | STRING2
+    {
+        $$ = new Literal($1, @1.first_line, @1.first_column, 2);
+    }
     | TRUE
     {
         $$ = new Literal(true, @1.first_line, @1.first_column, 3);
@@ -777,6 +816,14 @@ F   : '(' Expr ')'
     |ID '(' ListaExpr ')' 
     {
         $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+    }
+    |ID '(' ')' 
+    {
+        $$ =new Llamada($1, [], @1.first_line, @1.first_column);
+    }
+    | Expr '?' Expr ':' Expr
+    {
+        $$=new Ternario($1,$3,$5, @1.first_line, @1.first_column);
     }
     
 ;
@@ -960,6 +1007,10 @@ InstruccionFuncion
     |ID '(' ListaExpr ')' ';'
     {
         $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+    }
+    |ID '('')' ';'
+    {
+        $$ =new Llamada($1, [], @1.first_line, @1.first_column);
     }
     |AsigIndividual '=' Expr ';'
     {

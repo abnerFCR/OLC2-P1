@@ -87,7 +87,7 @@ export class Entorno {
             }
             entorno = entorno.anterior;
         }
-        throw new Error_(fila, columna, "Semantico", "La funcion indicada no existe.");
+        throw new Error_(fila, columna, "Semantico", "La funcion indicada no existe."+id);
     }
     public getGlobal(){
         let entorno:Entorno|null =this;

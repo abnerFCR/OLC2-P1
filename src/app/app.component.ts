@@ -9,6 +9,7 @@ import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/hint/javascript-hint";
 import { Error_ } from 'src/interprete/Errores/Error.js';
 import { Router } from '@angular/router';
+import { Funcion } from 'src/interprete/Instrucciones/Funcion';
 
 
 @Component({
@@ -60,16 +61,34 @@ export class AppComponent {
     cuadro_texto.simbolos =[];
     const ast = parser.parse(this.entrada.toString());
 
+    for(const instr of ast){
+      try{
+        if(instr instanceof Funcion){
+          instr.ejecutar(env);
+        }
+      }catch{
+        errores.push();
+      }
+    }
+    console.log(env);
+
     for (const instr of ast) {
       try {
-        instr.ejecutar(env);
-        
+        if(instr instanceof Funcion){
+          
+        }else{
+          instr.ejecutar(env);
+        }
       } catch (error) {
         errores.push(error);
       }
     }
+    console.log(env);
     this.imprimirErrores();
+  
   }
+
+
   
   public imprimirErrores() {
     for (const err of errores) {

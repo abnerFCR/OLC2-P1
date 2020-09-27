@@ -16,7 +16,6 @@ export class Statement extends Instruccion {
         for (const instr of this.sentencias) {
             try {
                 const elemento = instr.ejecutar(nuevoEntorno);
-
                 if (elemento instanceof Break) {
                     return elemento;
                 }
