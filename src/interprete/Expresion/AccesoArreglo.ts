@@ -29,10 +29,19 @@ export class AccesoArreglo extends Expresion {
                 if (varArreglo.valor instanceof Arreglo) {
                     if (this.funcion == '.length') {
                         return { valor: varArreglo.valor.getLength(), tipo: Tipo.NUMBER };
-                    }else if(this.funcion == '.pop'){
+                    } else if (this.funcion == '.pop') {
                         return { valor: varArreglo.valor.pop(), tipo: varArreglo.valor.tipo };
-                    }else if(this.funcion == '.push'){
+                    } else if (this.funcion == '.push') {
                         //TODO ACA VA EL PUSH
+                        let insertar = this.paraPush.ejecutar(entorno);
+                        if (insertar.tipo == Tipo.ARRAY) {
+                            varArreglo.valor.setElemento(new Simbolo(insertar.valor, varArreglo.id, varArreglo.valor.tipo, 'let', ''), varArreglo.valor.getLength());
+                            return { valor: true, tipo: Tipo.BOOLEAN };
+                        } else {
+                            varArreglo.valor.setElemento(new Simbolo(insertar.valor, varArreglo.id, insertar.tipo, 'let', ''), varArreglo.valor.getLength());
+                            return { valor: true, tipo: Tipo.BOOLEAN };
+                        }
+
                     }
 
                 }
@@ -56,6 +65,15 @@ export class AccesoArreglo extends Expresion {
                             console.log(varArreglo);
                             if (resultado.tipo == varArreglo.valor.tipo.tipo) {
                                 //TODO asignar el valor del push y corregir condicion
+                                let insertar = this.paraPush.ejecutar(entorno);
+                                if (insertar.tipo == Tipo.ARRAY) {
+                                    varArreglo.valor.setElemento(new Simbolo(insertar.valor, varArreglo.id, varArreglo.valor.tipo, 'let', ''), varArreglo.valor.getLength());
+                                    return { valor: true, tipo: Tipo.BOOLEAN };
+                                } else {
+                                    varArreglo.valor.setElemento(new Simbolo(insertar.valor, varArreglo.id, insertar.tipo, 'let', ''), varArreglo.valor.getLength());
+                                    return { valor: true, tipo: Tipo.BOOLEAN };
+                                }
+
                                 return { valor: true, tipo: Tipo.BOOLEAN };
                             } else {
                                 return { valor: false, tipo: Tipo.BOOLEAN };

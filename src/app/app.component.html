@@ -22,9 +22,9 @@
           <ngx-codemirror [options]="options_salida" [(ngModel)]="traduccion"></ngx-codemirror>
         </div>
       </div>
-      <div class="button" style="margin-left:auto; margin-right: auto; margin-top: 25px;">
-        <button type="button" class="btn btn-success" (click)="ejecutar()">Ejecutar</button>
-        <button type="button" class="btn btn-success" (click)="traducir()" style="margin-left: 20px;">Traducir</button>
+      <div class="button" style="margin-left:auto; margin-right:auto; position: relative; margin-top: 25px;">
+        <button type="button" class="btn btn-success" (click)="traducir()" >Traducir</button>
+        <button type="button" class="btn btn-success" (click)="ejecutar()" style="margin-left: 20px;">Ejecutar</button>
         <button type="button" class="btn btn-success" routerLink='/reportes' style="margin-left: 20px;">Reportes</button>
       </div>
     </div>
