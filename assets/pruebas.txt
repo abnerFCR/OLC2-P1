@@ -1,0 +1,1152 @@
+//otro comentario
+console.log(true || true);
+console.log(true || false);
+console.log(false || true);
+console.log(false || false);
+console.log("------------------");
+console.log(!(true && true));
+console.log(!(true && false));
+console.log(!(false && true));
+console.log(!(false && false));
+console.log("------------------");
+console.log("hola" > "hola");
+/*
+comentario multilineas
+*/
+
+let primera=4;
+if(9 > 3){
+   let hola2;
+	console.log("\"hola mundo, soy mayor que 3\"");
+}else if(8 > 9){
+	//comentario de una linea
+	console.log("adios, estoy mal");
+}else{
+	console.log("soy el ultimo");
+ 
+	//comentario de una linea 2
+}
+
+if(true){
+	let hola=5;
+}
+console.log(hola);
+
+let tercera;
+tercera=5;
+
+if(tercera > 2){
+	tercera=3;
+}else{
+	tercera=10;
+}
+console.log(tercera);
+
+let conta=1;
+
+while(conta < 10){
+	console.log("contador: "+conta);
+  	conta=conta+1;
+}
+
+let contador=1;
+
+while(contador < 10){
+	console.log("Contador: "+contador);
+	contador=contador+1;
+}
+console.log(contador);
+
+let hola=8;
+
+switch(hola){
+  case 1:{
+  	console.log("soy uno");
+  }
+  case 2:
+	console.log("soy 2");
+  case 3: 
+	console.log("soy 3");
+  case 5: 
+	console.log("soy 5");
+	default: 
+	console.log("soy default");
+
+}
+/***************************************************************/
+
+let esDia:boolean=true;
+let saludo:string ="Buenos Dias";
+let hora:number = 5.5;
+graficar_ts();
+while(esDia){
+  let otra:string;
+  //graficar_ts();
+    hora = hora + 0.5;
+    if(hora >= 12){
+        esDia = !esDia;
+    }else{
+        console.log(saludo+"! Fercho"+ hora);
+    }
+}
+//graficar_ts();
+do{
+    hora = hora +0.5;
+    switch(hora){
+        case 13:
+            console.log("Es la una: " + hora);
+
+        case 17:
+            console.log("Son las 5: " + hora);
+
+        default:{
+            console.log("La hora es: "+hora);
+
+        }
+    }
+}while(hora <= 18);
+
+type hola={
+	primer:string,
+    segundo:number,
+  	tercero:boolean,
+  	cuarto:hola
+};
+
+type adios={
+	primer:string,
+    segundo:number,
+  	tercero:boolean,
+  	cuarto:hola
+};
+
+let primeraHola:hola ={
+	primera:"ciencuenta"
+}; 
+graficar_ts();
+
+
+
+
+    private stringTemplateParser(expression: string, environment: Environment) {
+        const templateMatcher = /\${\s?([^{}\s]*)\s?}/g;
+        let text = expression.replace(templateMatcher, (substring, value, index) => {
+            value = environment.getVar(value);
+            if (value == null)
+            errores.push( new Error_(this.line, this.column, 'Semantico', 'Variable no definida'));
+            return value.valor;
+        });
+        return text.replace(/`/g, "");
+    }
+
+//-----------NUMERO IMPARES DEL 1 AL 10-------------------
+console.log("-----------NUMERO IMPARES DEL 1 AL 10---------------");
+let numero=0;
+while(numero<10){
+  	numero++;
+	if(numero%2 ==0){
+		continue;
+	}
+  console.log(numero);
+}
+console.log("--------------------------------------------------");
+//-------------------------------------------------------
+//-------------------ARREGLOS-----------------------------------//
+let hola:number[][][]=
+  [
+  	[
+	  [1,2],
+	  [3,4],
+	  [3.5,4.5]
+	],
+	[
+	  [5,6],
+	  [7,8],
+	  [7.5,8.5]
+	],
+	[
+	  [9,10],
+	  [11,12],
+	  [9.5,10.5]
+	]
+  ];
+
+  console.log(hola[0].length);
+
+hola[0][3][0]=693;
+console.log(hola[0][3][0]);
+
+let pruebita:number[][]=[];
+let contador1=1;
+let ingreso = 1;
+while(contador1<=10){
+	let contador2=1;
+  	while(contador2<=10){
+		pruebita[contador1][contador2]=ingreso;
+		ingreso++;
+		contador2++;
+	}
+  	contador1++;
+}
+contador1 = 1;
+let salida:string = "";
+while(contador1<=10){
+	let contador2=1;
+  	while(contador2<=10){
+		salida = salida + pruebita[contador1][contador2]+"\t|\t";
+		ingreso++;
+		contador2++;
+	}
+	salida = salida + "\n";
+  	contador1++;
+}
+console.log(salida);
+/--------------------------------PRUEBA CON FOR---------------------------------
+
+let ingreso = 1;
+let salida = "";
+let pruebita:number[][]=[];
+
+for(let contador1=0; contador1<10; contador1++){
+  	for(let contador2=0; contador2<10; contador2++){
+		pruebita[contador1][contador2]=ingreso;
+		ingreso++;
+	}
+}
+
+for(let contador1=0; contador1 < pruebita.length; contador1++){
+  	for(let contador2=0; contador2<pruebita[contador1].length;contador2++){
+		salida = salida + pruebita[contador1][contador2]+"\t|\t";
+		ingreso++;
+	}
+	salida = salida + "\n";
+}
+console.log(salida);
+//--------------------------ORDENAMIENTO DE UNA MATRIZ--------------------------------------
+let matrix1:number[][]=
+[
+	[25,3,118,6,90],
+  	[33,44,9,46,79],
+  	[1,3,169,18,20],
+  	[15,39,99,6,83],
+  	[82,31,95,51,87]
+];
+
+let aux = 0;
+    for(let i = 0; i < matrix1.length; i++){
+        for(let j = 0; j < matrix1[i].length; j++){
+            for(let k = 0; k <= i; k++){
+                for(let l = 0; l <= j; l++){
+                    if(matrix1[i][j] < matrix1[k][l]){
+                        aux = matrix1[i][j];
+                        matrix1[i][j] = matrix1[k][l];
+                        matrix1[k][l] = aux;
+                    }
+                }
+            }
+        }
+    }
+
+let salida:string="";
+for(let i=0; i<matrix1.length; i++){
+	for(let j=0; j<matrix1[i].length; j++){
+		salida = salida + matrix1[i][j]+"\t|\t";
+	}
+  	salida = salida + "\n";
+}
+console.log(salida);
+
+//------------------------LIMPIEZA DE LA MATRIZ-----------------------------------------------
+
+ for(let i = 0; i < matrix1.length; i++){
+        for(let j = 0; j < matrix1[i].length; j++){
+            matrix1[i][j] = 0;
+        }
+    }
+
+salida="";
+for(let i=0; i<matrix1.length; i++){
+	for(let j=0; j<matrix1[i].length; j++){
+		salida = salida + matrix1[i][j]+"\t|\t";
+	}
+  	salida = salida + "\n";
+}
+console.log(salida);
+
+//-------------------------------MAXIMO DE LA MATRIZ-------------------------------------------------
+const min = 0;
+const max = 4;
+let iAux = 0;
+    let jAux = 0;
+    let temp = matrix1[min][min];
+    for(let i = 0; i < matrix1.length; i++){
+        for(let j = 0; j < matrix1[i].length; j++){
+            if(matrix1[i][j] > temp){
+                temp = matrix1[i][j];
+                iAux = i;
+                jAux = j;
+            }
+        }
+    }
+    console.log("Max -> ["+iAux+","+jAux+"] = "+temp);
+//--------------------------------MINIMO DE LA MATRIZ----------------------------------------------------
+const min = 0;
+const max = 4;
+let iAux = 0;
+    let jAux = 0;
+    let temp = matrix1[min][min];
+    for(let i = 0; i < matrix1.length; i++){
+        for(let j = 0; j < matrix1[i].length; j++){
+            if(matrix1[i][j] < temp){
+                temp = matrix1[i][j];
+                iAux = i;
+                jAux = j;
+            }
+        }
+    }
+    console.log("Min -> ["+iAux+","+jAux+"] = "+temp);
+
+//----------------------------MATRIZ TRANSPUESTA----------------------------------------------------
+
+//poner const en la definicion de los arreglos  y cambiar operador de potencia por **
+//no acepta reasignaciones de este tipo matrix[]=[]
+
+const max = 5;
+const min = 0;
+let matrixAux : number[][] = [];
+    for(let i = 0; i < max; i++){
+        //matrixAux[i] = [];
+        for(let j = 0; j < max; j++){
+            matrixAux[i][j] = matrix1[j][i];
+        }
+    }
+    for(let i = 0; i < max; i++){
+        for(let j = 0; j < max; j++){
+            matrix1[i][j] = matrixAux[i][j];
+        }
+    }
+
+//------------------------------------MULTIPLICACION	---------------------------------------------------------------
+
+ for(let i = min; i < max; i++){
+        for(let j = min; j < max; j++){
+            for(let k = min; k < max; k++){
+                matrix1[i][j] = matrix1[i][j] + matrix1[i][k] * matrix2[k][j];
+            }
+        }
+    }
+//-----------------------------------------------------------------------------------------------------------------
+//Funciones
+
+function nueva(hola:string):void{
+	console.log("Hola");
+	console.log("Hola2");
+	console.log("Hola3");
+	console.log("Hola4");
+}
+///--------------------------------------------------
+function nueva(hola:string):void{
+	console.log("Hola "+hola);
+	console.log("Hola2 "+hola);
+	console.log("Hola3"+hola);
+	console.log("Hola4"+hola);
+}
+
+function primera(hola:string, hola2:string):void{
+	console.log("primera entrada: "+hola);
+  	let nuevaVar = "100 anios";
+  	nueva(hola2);
+}
+
+primera("La prueba!", "Buenos Dias");
+
+//-------------------------funcion de haoi-----------------------------------------
+function hanoi(discos: number, origen: number, auxiliar: number, destino: number): void {
+    if (discos == 1) {
+        console.log("Mover disco de "+origen+" a "+destino);
+    } else {
+        hanoi(discos - 1, origen, destino, auxiliar);
+        console.log("Mover disco de "+origen+" a "+destino);
+        hanoi(discos - 1, auxiliar, origen, destino);
+    }
+}
+hanoi(3, 1, 2, 3);
+//---------------------------FIBONACCI----------------------------------------
+function fibonacci(n: number): number {
+    if (n <= 1) {
+        return n;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(13));
+
+//-----------------------------------------------------------------------------
+//Esto jala full
+function ackermann(m: number, n: number): number {
+    if (m == 0) {
+        return (n + 1);
+    } else if (m > 0 && n == 0) {
+        return ackermann(m - 1, 1);
+    } else {
+        return ackermann(m - 1, ackermann(m, n - 1));
+    }
+}
+
+console.log(ackermann(3,7));
+
+function multiplicacion(a : number, b : number) : number{
+    if(b == 0){
+        return 0;
+    }
+    return a + multiplicacion(a, b - 1);
+}
+
+console.log(multiplicacion(11,23));
+
+function hofstaderMasculino(n: number): number {
+    if (n < 0) {
+        return 0;
+    } else {
+        if (n != 0) {
+            return n - hofstaderMasculino(n - 1);
+        } else {
+            return 0;
+        }
+    }
+}
+
+console.log(hofstaderMasculino(1238));
+
+function factorial(n: number): number {
+    switch (n) {
+        case 0:
+            return 1;
+        default:
+            return n * factorial(n - 1);
+    }
+}
+
+console.log(factorial(10));
+//-------------------------------------------
+//PRUEBA DE FUNCION CON CICLOS ADENTRO
+
+function uno(par1:number):number{
+  for(let h=0;h<10;h++){
+	if(h>5){
+		return -1;
+	}
+	console.log("El anidado: "+par1);
+  }
+}
+  for(let h=0;h<10;h++){
+	console.log("Soy la numero: "+uno(h));
+  }
+//----------------
+function uno(par1:number):number{
+  //for(let h=0;h<10;h++){
+	//if(h>5){
+		break;
+	//}
+//	console.log("El anidado: "+par1);
+//  }
+  //return -1;
+}
+  for(let h=0;h<10;h++){
+	console.log("Soy la numero: ");
+	uno(h);
+	console.log("Otro comentario");
+	break;
+	console.log("Otro mas");
+  }
+
+//////////////////--------------------------ARCHIVO DE RECURSIVAS-----------------------------
+
+menu();
+
+function fibonacci(n: number): number {
+    if (n <= 1) {
+        return n;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+function hanoi(discos: number, origen: number, auxiliar: number, destino: number): void {
+    if (discos == 1) {
+        console.log("Mover disco de "+origen+" a "+destino+"");
+    } else {
+        hanoi(discos - 1, origen, destino, auxiliar);
+        console.log("Mover disco de "+origen+" a "+destino+"");
+        hanoi(discos - 1, auxiliar, origen, destino);
+    }
+}
+
+function ackermann(m: number, n: number): number {
+    if (m == 0) {
+        return (n + 1);
+    } else if (m > 0 && n == 0) {
+        return ackermann(m - 1, 1);
+    } else {
+        return ackermann(m - 1, ackermann(m, n - 1));
+    }
+}
+
+function par(nump: number): number {
+    return nump == 0 ? 1 : impar(nump - 1);
+}
+
+function impar(numi: number): number {
+    return numi == 0 ? 0 : par(numi - 1);
+}
+function modulo(n : number, p : number) : number{
+    return n < p ? n : modulo(n - p, p);
+}
+
+function mcd(a : number, b : number) : number{
+    return b == 0 ? a : mcd(b, modulo(a, b));
+}
+
+function hofstaderMasculino(n: number): number {
+    if (n < 0) {
+        return 0;
+    } else {
+        if (n != 0) {
+            return n - hofstaderMasculino(n - 1);
+        } else {
+            return 0;
+        }
+    }
+}
+
+function factorial(n: number): number {
+    switch (n) {
+        case 0:
+            return 1;
+        default:
+            return n * factorial(n - 1);
+    }
+}
+
+function potencia(base: number, exp: number): number {
+    switch (exp) {
+        case 0:
+            return 1;
+        default:
+            return base * potencia(base, exp - 1);
+    }
+}
+
+
+function multiplicacion(a : number, b : number) : number{
+    if(b == 0){
+        return 0;
+    }
+    return a + multiplicacion(a, b - 1);
+}
+
+function menu():void{
+    console.log(fibonacci(13));  // 233
+    hanoi(3, 1, 2, 3);
+    console.log(ackermann(3, 6)); //509
+    console.log(par(13)); //0
+    console.log(par(20)); //1
+    console.log(hofstaderMasculino(1238)); //619
+    console.log(factorial(10)); //3628800 
+    console.log(potencia(5, 4)); //625
+    console.log(mcd(240,506)); //2
+    console.log(multiplicacion(11,23)); //253
+}
+//--------------------FUNCION RECURSIVO 2 ------------------------------------------
+//JALA TODO EN CHROME MENOS EL ACKERMAN DE 3,8
+//POR SEPARADO JALA TODO JUNTO JALAN AVECES UNAS COSAS Y AVECES OTRAS Y ASI... 
+//ES POR EL TIEMPO QUE SE TARDAN EN EJECUTAR LOS PROCESOS. 
+ function fibonacci( n:number):number {
+        if (n <= 1) {
+            return n;
+        }
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+    console.log(fibonacci(13));  // 233
+
+
+ function hanoi( discos:number, origen:number,  auxiliar:number,  destino:number):string {
+ let result:string = "";
+ if (discos == 1) {
+result = result + (origen + destino);
+  } else {
+    result = result + hanoi(discos - 1, origen, destino, auxiliar);
+     result = result + (origen + destino);
+     result = result + hanoi(discos - 1, auxiliar, origen, destino);
+  }
+        return result;
+    }
+
+    console.log(hanoi(4,1,5,3));  //648648648648648
+
+ function ackermann( m:number,  n:number):number {
+        if (m == 0) {
+            return (n + 1);
+        } else if (m > 0 && n == 0) {
+             let cuatro:number = ackermann(m - 1, 1);
+            return cuatro;
+        } else {
+            let ret:number =  ackermann(m, n - 1);
+            let  nueva:number = ackermann(m - 1, ret);
+            return nueva;
+        }
+    
+}
+console.log(ackermann(3,7)); //2045 se tardo 6 segundos
+
+
+    function par( nump:number):number {
+        if (nump == 0) {
+            return 1;
+        }
+        return impar(nump - 1);
+    }
+
+    function impar( numi:number):number {
+        if (numi == 0) {
+            return 0;
+        }
+        return par(numi - 1);
+    }
+    console.log(par(29)); //0
+    console.log(par(400)); //1
+
+    function hofstaderMasculino( n:number):number {
+        if (n < 0) {
+            return 0;
+        } else {
+           
+            if(n != 0){
+                return n - hofstaderMasculino(n - 1);
+            }else{ 
+                return 0;
+              
+            }
+        }
+    }
+    console.log(hofstaderMasculino(1238)); // 619
+
+
+  
+    function factorial( n:number):number {
+      
+        switch(n){
+            case 0:
+                return 1;
+            case 0:
+                return -100; 
+            default:
+                return n * factorial(n - 1); 
+               
+        }
+    }
+    console.log(factorial(13)); //6227020800
+
+
+    function potencia( base:number,  exp:number):number {
+    
+        switch(exp){
+            case 0:
+                return 1;
+            case 0:
+                return -100; 
+            default:
+                return (base * potencia(base, exp - 1));
+               
+        }
+    }    
+console.log(potencia(30,5)); //24300000
+
+//---------------------EXPRESIONES---------------------------------------------------
+let let1 = 1;
+let punteo = 0;
+
+Inicio();
+
+ function  Inicio() {
+    console.log("-----------------CALIFICACION-----------------");
+    let let1 = 0;
+    //Verificar ámbitos, se toma con prioridad la letiable local ante la global.
+    if (let1 != 0)
+    {
+        console.log("No se toma con prioridad la letiable local ante la global");
+        console.log("Perdiste 5 puntos :c");
+    }
+    else{
+        punteo = punteo + 5;
+    }
+
+    //Sección de declaracion de letiables
+    Declaracion();
+    
+    //seccion de manejo de ámbitos 2
+    let amb1 = 5;
+    Ambitos2();
+
+    //Sección de expresiones aritméticas
+    Aritmeticas();
+
+    
+    //Seccion de expresiones lógicas
+    logicas();
+
+    
+    //Seccion de expresiones relacionales
+    Relacionales();
+
+    //punteo final
+    console.log("punteo Final: "+punteo);
+}
+
+ function  Declaracion(){
+    /*
+        SALIDA ESPERADA:
+            ========= Metodo Declaracion =========
+            Voy a ganar Compiladores 2 :D
+            ======================================
+    
+    */
+    console.log("========= Metodo Declaracion =========");
+    let n1 = 2;
+    let n2 = 2;
+    let n3 = 2;
+    let n4 = 2;
+    let str1 = "Voy a ganar Compiladore";
+    let str2 = "Voy a ganar Compiladore";
+    let str3 = "Voy a ganar Compiladore";
+    let str4 = "Voy a ganar Compiladore";
+    let db1 = 0.0;
+    let db2 = 0.0;
+    let db3 = 0.0;
+    let db4 = 0.0;
+    let chr1 = 's';
+    let chr2 = 's';
+    let chr3 = 's';
+    let chr4 = "s";
+    //if n modificar la asignación
+    if (db1 == db4){
+        console.log(str4 + chr4 +" " +n4+" :D");
+    }else {
+        console.log("Problemas en el metodo declaracion :(");
+    }
+    console.log("======================================");
+    punteo = punteo + 5;
+}
+
+ function  Ambitos2(){
+    //debería lanzar un error, cualquiera
+    //comentar luego de que lanze el error
+    console.log("========= Error Ambitos ==============");
+    console.log("Debería lanzar error: "+amb1);
+    let amb1 = "Desde ambito2";
+    console.log("======================================");
+    console.log("================ Nice ================");
+    punteo = punteo + 5;
+    console.log("Sin error: "+amb1);
+    console.log("======================================");
+
+}
+
+ function  Aritmeticas(){
+    //suma de lets con caracteres
+    /*
+        SALIDA ESPERADA
+    ==============Aritmeticas=============
+    Hola COMPI
+    El valor de  n1 = 52.1
+    El valor de n3 = 70.0
+    -Operaciones Basicas: valor esperado:   a)62   b)0   c)-19   d)256   resultados>
+    a) 62
+    b) 0
+    c) -19
+    d) 256
+    ======================================
+    */
+    console.log("==============Aritmeticas=============");
+    let art1 = "Hola "+"C"+""+"O"+""+"M"+""+"P"+""+"I";
+    console.log(art1);
+    if (art1=="Hola COMPI"){
+        punteo = punteo + 3;
+    }else {
+        console.log("Perdiste 3 puntos en suma de let y let :c");
+    }
+
+    let n1 = 0.0 + 1 + 1 + 1 + 0.1 + 49;
+    console.log("El valor de  n1 = "+n1);
+    if (n1 == 52.1){
+        punteo = punteo + 5;
+    }else {
+        console.log("Perdiste 5 puntos en suma de enteros booleanos y caracteres :c");
+    }
+
+    let n4 = (5750 * 2) - 11800 + 1.0;
+    let n3 = (((3 * 3) + 4) - 80 + 40.00 * 2 + 358.50 - (29 / 14.50)) - (0.50) + n4;
+    console.log("El valor de n3 = "+n3);
+    if (n3 == 70)
+    {
+        punteo = punteo + 3;
+    }
+    else 
+    {
+        console.log("Perdiste 3 puntos :c ");
+    }
+    
+    operacionesBasicas();
+    operacionesAvanzadas();
+    console.log("======================================");
+    
+}
+
+ function  operacionesBasicas(){
+    console.log("Operaciones Aritmeticas 1: valor esperado:  \na)62   \nb)0   \nc)-19   \nd)256   \nresultados>");
+    let a = (20-10+8/2*3+10-10-10+50);
+    let b = (50/50*50+50-100+100-100);
+    let c = (100/20*9-78+6-7+8-7+7*1*2*3/3);
+    let d = (2 **(20/5*2));
+    console.log("a) " +a);
+    console.log("b) " +b);
+    console.log("c) " +c);
+    console.log("d) " +d);
+    if (a==62 && b==0 && c == -19 && d ==256){
+        console.log("Operaciones aritmeticas 1 bien :D");
+        punteo = punteo + 5;
+    }else {
+        console.log("Error en las operaciones basicas :(");
+    }
+}
+
+ function  operacionesAvanzadas(){
+    let aritmetica1 = 2;
+    let aritmetica2 = -10;
+    console.log("Operaciones Aritmeticas 2: valor esperado> -20  41, resultado>");
+    let aritmetica3 = aritmetica2*aritmetica1;
+    console.log(aritmetica3+"");
+    aritmetica1 = aritmetica3/aritmetica1+50 **2/50+50*2-100+100/100-0;
+    console.log(aritmetica1+"");
+    if (aritmetica3 == -20 && aritmetica1 == 41){
+        console.log("Operaciones aritmeticas 2 bien :D");
+        punteo = punteo + 5;
+    }else {
+        console.log("Error Operaciones Aritmeticas :c alv :c");
+    }
+}
+
+//FN5HU-3uykL
+
+ function  logicas(){
+     console.log("==============logicas1=============");
+    if (!!!!!!!!!!!!!!!!!!!!!!true){
+        punteo = punteo + 1;
+        console.log("Bien primera condicion :)");
+    }else {
+        console.log("Perdiste 1 punto :c");
+    }
+
+    if (true && true || false && false && false || !true){
+        punteo = punteo + 1;
+        console.log("Bien segunda condicion:)");
+    }else {
+        console.log("Perdiste 1 punto :c");
+    }
+    console.log("======================================");
+    logicas2();
+}
+
+ function  logicas2(){
+    let n0 = 16;
+         console.log("==============logicas2=============");
+
+    if (!(!(n0 == 16 && false == true) && !(true))){
+            console.log("Not y Ands Correctos");
+                        punteo = punteo +3;
+
+    }else {
+                console.log("No funcionan nots y ands :(");
+        }
+    let n1 = n0 /16;
+    n1 = n1 + 1;
+        let condicion1 = n1 !=2; //esto es false
+        let aritmetica1 = n0/16 + 0; // aritmetica1 = 0
+        let condicion2 = aritmetica1 == n1; //false
+        let condicion3 = !true; //false
+        
+    if (!(!(!(condicion1||condicion2) || condicion3 ))){
+        console.log("Nots y Ors correectos");
+                punteo = punteo + 3;
+    }else {
+            console.log("No Funciona nots y ands :(");
+        }
+            console.log("======================================");
+}
+
+ function  Relacionales(){
+    let n0 = 34;
+    let n1 = 16;
+    
+    relaciones1(n0);
+    relaciones2(n1);
+}
+
+
+ function  relaciones1(salida:number)
+{
+        console.log("==============relacionales1=============");
+        let n0 = salida + 0.0;
+        if (n0 < 34.44)
+            {
+                salida = salida+15;
+                if (salida > 44)
+                    {
+                        salida++;
+                    }
+            }
+            else {
+                salida = 1;
+            }
+        
+        if (salida != 1)
+            {
+                if (salida == 50)
+                    {
+                        console.log("salida Correcta Relacionales 1!");
+                        punteo = punteo + 5;
+                    }
+                    else {
+                        console.log("salida incorrecta!!");
+                    }
+            }
+            else {
+                console.log("salida incorrecta!!");
+            }
+        console.log("======================================");
+}
+
+ function  relaciones2(n0:number){
+            console.log("vas bien, animo :D");
+            console.log("============Relacionales2=============");
+
+            if (10-15 >= 0 && 44.44 == 44.44)
+            {
+                console.log("salida incorrecta primer if relacionales2!!");
+            }
+            else {
+                if (15+8 == 22-10+5*3-4 && 13*0>-1)
+                    {
+                        if (10.0 != 11.0-1.01 )
+                            {
+                                console.log("salida CORRECTA en relacionales2!!");
+                                punteo = punteo + 5;
+                            }
+                            else {
+                                console.log("salida incorrecta segundo if relacionales 2!!");
+                            }
+                    }
+                    else {
+                        if (1 == 1)
+                            {
+                                console.log("salida incorrecta relacionales 2 3er if !!");
+                            }
+                            else {
+                                console.log("salida incorrecta relacionales 2 Sino3er if !!");
+                            }
+                    }
+            }
+        console.log("======================================");
+        FactorialIterativo(7);
+}
+
+function  FactorialIterativo(n2:number){
+                     console.log("==============for Calificar Ciclos=============");
+
+    let numeroFactorial = n2;
+    while(numeroFactorial > -1){
+        mostrarFactorial(numeroFactorial);
+        numeroFactorial--;
+    }
+        SentenciasAnidadas();
+        console.log("======================================");
+
+}
+
+ function  mostrarFactorial(n2:number){
+    let fact = 1;
+    let str= "El factorial de: "+n2 +" = ";
+    if (n2 !=0){
+        for(let i=n2; i >0; i--){
+            fact = fact * i;
+            str = str + i;
+            if (i > 1){
+                str = str + " * ";
+
+            }else {
+                str = str + " = ";
+            }
+        }
+    }
+        str = str + fact+ ";";
+    console.log(str);
+}
+
+
+ function  figura1(n: number){
+    
+    let letFigura = "";
+    for (let i = -3*n/2; i <= n; i++) {
+        letFigura = "";
+            for (let j = -3*n/2; j <= 3*n/2; j++) {
+
+                let absolutoi = i;
+                let absolutoj = j;
+                if (i <0){
+                    absolutoi = i*-1;
+                }
+                if (j < 0){
+                    absolutoj = j*-1;
+                }
+                if ((absolutoi + absolutoj < n)
+                    || ((-n/2-i) * (-n/2-i) + ( n/2-j) * ( n/2-j) <= n*n/2)
+                    || ((-n/2-i) * (-n/2-i) + (-n/2-j) * (-n/2-j) <= n*n/2)) {
+                    letFigura = letFigura + "* ";
+                }
+                else{
+                    letFigura = letFigura + ". ";
+                }
+            }
+            console.log(letFigura);
+        }
+    console.log("if la figura es un corazon +10 <3");
+}
+
+ function  figura2(){
+    let letFigura = "";
+     let c = "* ";
+        let b = "  ";
+        let altura = 10;
+        let ancho = 1;
+        for (let i = 0; i < altura/4; i++){
+            for (let k = 0; k < altura - i; k++){
+                letFigura = letFigura+b;
+            }
+            for (let j = 0; j < i*2 + ancho; j++){
+                letFigura = letFigura + c;
+            }
+            
+            console.log(letFigura);
+            letFigura ="";
+        }
+         letFigura = "";
+         for(let i = 0; i < altura/4; i++){
+            for(let k = 0; k < (altura - i) - 2; k++){
+                letFigura = letFigura + b;
+            }
+            for(let j = 0; j < i*2 + 5; j++){
+                letFigura = letFigura + c;
+            }
+            
+            console.log(letFigura);
+            letFigura = "";
+        }
+         letFigura = "";
+        for(let i = 0; i < altura/4; i++){
+            for(let k = 0; k < (altura - i) - 4; k++){
+                letFigura = letFigura + b;
+            }
+            for(let j = 0; j < i*2 + 9; j++){
+                letFigura = letFigura +c;
+            }
+            
+            console.log(letFigura);
+            letFigura = "";
+        }
+        
+        letFigura ="";
+        for(let i = 0; i < altura/4; i++){
+            for(let k = 0; k < (altura - i) - 6; k++){
+                letFigura = letFigura + b;
+            }
+            for(let j = 0; j < i*2 + 13; j++){
+                letFigura = letFigura + c;
+            }
+            
+            console.log(letFigura);
+            letFigura = "";
+        }
+        letFigura = "";
+        for(let i = 0; i < altura/4; i++){
+            for(let k = 0; k < altura -2; k++){
+                letFigura = letFigura + b;
+            }
+            for(let j = 0; j < 5; j++){
+                letFigura = letFigura + c;
+            }
+            
+            console.log(letFigura);
+            letFigura = "";
+        }
+        
+            console.log("if la figura es un Arbol +10 <3");
+
+       }
+
+ function  SentenciasAnidadas(){
+    let numero1 = 0;
+    do{
+    switch(numero1){
+        case 0:
+            figura0(8);
+            break;
+        case 1:
+            figura1(10);
+            break;
+        case 2:
+            figura2();
+            break;
+        default:
+            console.log("Esto se va a console.log 2 veces :3");
+            
+    }
+    numero1 = numero1 + 1;
+    }while(numero1 <5);
+}
+
+ function  figura0(numero:number){
+    let i = 0;
+    while(i < numero){
+        let j = 0;
+        let numeroMostrar = 1;
+        let unaFila = "";
+        while(j <= i){
+            unaFila = unaFila + " " + numeroMostrar;
+            numeroMostrar  = numeroMostrar + 1;
+            j = j + 1;
+        }
+        console.log(unaFila);
+        i = i + 1;
+    }
+    console.log("if la figura es un triangulo de numeros + 5 :3");
+
+
+//------------------------
+function swap(i : number, j: number, array : number[]) : void{
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+}
+
+function menu(){
+	let array : number[] = [32,21,7,89,56,909,109, 2];
+  	swap(1,2,array);
+}
+menu();
+
+function print(matrix : number[]) : string{
+	let salida ="";
+    for(let i = 0; i < matrix.length; i++){
+		salida = salida +matrix[i]+ ", ";
+    }
+	return salida;
+}
