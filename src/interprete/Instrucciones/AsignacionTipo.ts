@@ -24,7 +24,7 @@ export class AsignacionTipo extends Instruccion {
     public ejecutar(entorno: Entorno) {
         //variableTipo es una variable que nos devuelve la variable a la que queremos asignar sin los valores
         let variableTipo = entorno.getVar(this.idVariable);
-        let plantillaType = entorno.getType(this.idTipo);
+        let plantillaType = entorno.getType(variableTipo.idTipo);
         let listaAtributos: Map<string, Simbolo> = new Map();
 
         //PREGUNTAR SI EL VALOR ES NULO SI ES ASI ENTONCES NO HAY QUE HACER NADA EN TODO EL METODO 

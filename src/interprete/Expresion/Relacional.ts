@@ -107,6 +107,13 @@ export class Relacional extends Expresion{
             }
 
         }else{
+            if((izquierdaValue.tipo == Tipo.TYPE && derechaValue.tipo==Tipo.NULL)){
+                const respuesta:boolean = izquierdaValue.valor ==null;
+                return {valor:respuesta, tipo:Tipo.BOOLEAN};
+            }else if(izquierdaValue.tipo==Tipo.NULL && derechaValue.tipo == Tipo.TYPE ){
+                const respuesta:boolean = derechaValue.valor ==null;
+                return {valor:respuesta, tipo:Tipo.BOOLEAN};
+            }
             result={valor:-1, tipo: Tipo.NULL};    
             throw new Error_(this.linea, this.columna, 'Semantico', 'No se pueden comparar tipos distintos: ' + this.tiposString[izquierdaValue.tipo]+'_'+this.tiposString[derechaValue.tipo]);
         }

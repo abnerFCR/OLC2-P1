@@ -1150,3 +1150,53 @@ function print(matrix : number[]) : string{
     }
 	return salida;
 }
+//--------------------------------
+
+type hola={
+	primer:string,
+    segundo:number,
+  	tercero:boolean,
+  	cuarto:hola
+};
+
+type adios={
+	primer:string,
+    segundo:number,
+  	tercero:boolean,
+  	cuarto:hola
+};
+
+let primeraHola:hola ={
+	primer:"ciencuenta"
+}; 
+
+console.log(primeraHola.primer);
+
+//-----------------------------------------
+function print(matrix : number[]) : string{
+	let salida ="";
+    for(let i = 0; i < matrix.length; i++){
+		salida = salida +matrix[i]+ ", ";
+    }
+	return salida;
+}
+
+let arreglo:number[][]=[[1,2,3],[4,5,6],[7,8,9]];
+
+for(let iterador of arreglo[2]){
+  console.log(iterador);
+}
+
+function print(matrix : number[]) : string{
+	let salida ="";
+    for(let i = 0; i < matrix.length; i++){
+		salida = salida +matrix[i]+ ", ";
+    }
+	return salida;
+}
+
+let arreglo:number[][]=[[1,2,3],[4,5,6],[7,8,9]];
+
+for(let iterador in arreglo[2]){
+  console.log(arreglo[iterador]);
+}

@@ -2,6 +2,7 @@ import { Instruccion } from '../Abstracto/Instruccion';
 import { cuadro_texto } from '../Abstracto/Retorno';
 import { Entorno } from '../Simbolo/Entorno';
 import { Simbolo } from '../Simbolo/Simbolo';
+import { Funcion } from './Funcion';
 
 export class GraficarTs extends Instruccion {
     private tiposString:string[]=['NUMBER','STRING', 'BOOL','NULL', 'ARRAY', 'VOID','TYPE'];
@@ -17,6 +18,13 @@ export class GraficarTs extends Instruccion {
                 //console.log(varActual);
                 cuadro_texto.salida = cuadro_texto.salida+'\n'+i+'\t\t\t|'+ varActual.id+ '\t\t\t\t\t\t\t|'+varActual.tipoSimbolo+'\t\t\t\t\t\t|'+
                                     this.tiposString[varActual.tipo]+'\t\t\t\t|'+varActual.valor;
+                i++;
+            }
+            for (const elemento of entornoPivote.funciones) {
+                let varActual:Funcion = elemento[1];
+                //console.log(varActual);
+                cuadro_texto.salida = cuadro_texto.salida+'\n'+i+'\t\t\t|'+ varActual.nombre+ '\t\t\t\t\t\t\t|'+'Funcion'+'\t\t\t\t\t\t|'+
+                                    this.tiposString[varActual.tipoRetorno]+'\t\t\t\t|'+'Por definir.';
                 i++;
             }
             cuadro_texto.salida=cuadro_texto.salida + '\n----------------------------------------------------------------------------------------------------------------------';

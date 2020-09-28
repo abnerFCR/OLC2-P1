@@ -11,7 +11,7 @@ export class Entorno {
     
     private types: Map<string, Type_>;
 
-    private funciones:Map<string,Funcion>;
+    public funciones:Map<string,Funcion>;
 
     public banderaCiclo:boolean[]=new Array();
     public banderaSwitch:boolean[]=new Array();

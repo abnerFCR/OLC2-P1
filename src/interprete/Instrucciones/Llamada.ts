@@ -39,7 +39,7 @@ export class Llamada extends Instruccion {
                 if (funcion.parametros[i].tipo == Tipo.ARRAY) {
                     nuevoEntorno.guardar(funcion.parametros[i].id, expresionActual.valor,expresionActual.tipo,'let',funcion.parametros[i].idTipo,this.linea,this.columna);
                 } else if (funcion.parametros[i].tipo == Tipo.TYPE) {
-
+                    nuevoEntorno.guardar(funcion.parametros[i].id, expresionActual.valor,expresionActual.tipo,'let',funcion.parametros[i].idTipo,this.linea,this.columna);
                     //console.log(expresionActual);
                 } else {
                     nuevoEntorno.guardar(funcion.parametros[i].id, expresionActual.valor, expresionActual.tipo, 'let', '', this.linea, this.columna);

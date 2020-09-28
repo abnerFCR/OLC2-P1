@@ -20,10 +20,14 @@
     const { Simbolo } = require('../Simbolo/Simbolo');
     const { DoWhile } = require('../Instrucciones/DoWhile');
     const { For } = require('../Instrucciones/For');
+    const { ForOf } = require('../Instrucciones/ForOf');
+    const { ForIn } = require('../Instrucciones/ForIn');
     const { IncreDecre } = require('../Instrucciones/IncreDecre');
     const { Statement} = require('../Instrucciones/Statement');
     const { Asignacion} = require('../Instrucciones/Asignacion');
     const { AsignacionIndArreglo } = require('../Instrucciones/AsignacionIndArreglo');
+    const { AsignacionIndTipo } = require('../Instrucciones/AsignacionIndTipo');
+    const { AsignacionTipo } = require('../Instrucciones/AsignacionTipo');
     const { Tipo, cuadro_texto } =require("../Abstracto/Retorno");
     const { errores } =require('../Errores/Errores');
     const { Error_ } =require('../Errores/Error');
@@ -125,6 +129,8 @@ string3 (\`({escape}|{acceptedquote3})*\`)
 "break"                 return 'BREAK'
 "continue"              return 'CONTINUE'
 "for"                   return 'FOR'
+"of"                   return 'OF'
+"in"                    return 'IN'
 "function"              return 'FUNCTION'
 "void"                  return "TIPOVOID"
 "return"                  return "RETURN"  
@@ -237,6 +243,14 @@ Instruccion
     {
         $$=$1;
     }
+    |ForOf 
+    {
+        $$=$1;
+    }
+    |ForIn 
+    {
+        $$=$1;
+    }
     |Funcion 
     {
         $$=$1;
@@ -248,6 +262,10 @@ Instruccion
     |ID '('')' ';'
     {
         $$ =new Llamada($1, [], @1.first_line, @1.first_column);
+    }
+    |ID  '=' '{' ListaValoresTipo '}' ';'
+    {
+        $$ =  new AsignacionTipo($1, '', $4, @1.first_line, @1.first_column);
     }
     |'RETURN' Expr ';'
     {
@@ -948,6 +966,14 @@ AsigIndividual
     {
         $$ = new AsignacionIndArreglo($1,$3,null,'',null, @1.first_line, @1.first_column);
     }
+    |AsigIndividual '.' ID 
+    {
+        $$= new AsignacionIndTipo($3,'',$1,$1,null, @1.first_line, @1.first_column);
+    }
+    |ID '.' ID
+    {
+        $$= new AsignacionIndTipo($1,$3,null,null, @1.first_line, @1.first_column);
+    }
 ;
 
 StatementFuncion
@@ -1050,6 +1076,18 @@ InstruccionFuncion
     {
         $$=$1;
     }
+    |ForOf 
+    {
+        $$=$1;
+    }
+    |ForIn
+    {
+        $$=$1;
+    }
+    |ID  '=' '{' ListaValoresTipo '}' ';'
+    {
+        $$ =  new AsignacionTipo($1, '', $4, @1.first_line, @1.first_column);
+    }
     |ID '(' ListaExpr ')' ';'
     {
         $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
@@ -1086,4 +1124,25 @@ InstruccionFuncion
         errores.push(error);
     }
     
+;
+ForOf
+    :'FOR' '(' 'LET' ID 'OF' Expr')' Statement
+    {
+        $$ =  new ForOf($4,$6,$8, @1.first_line, @1.first_column);
+    }
+    |'FOR' '(' 'CONST' ID 'OF' Expr')' Statement
+    {
+        $$ =  new ForOf($4,$6,$8, @1.first_line, @1.first_column);
+    }
+;
+
+ForIn
+    :'FOR' '(' 'LET' ID 'IN' Expr')' Statement
+    {
+        $$ =  new ForIn($4,$6,$8, @1.first_line, @1.first_column);
+    }
+    |'FOR' '(' 'CONST' ID 'IN' Expr')' Statement
+    {
+        $$ =  new ForIn($4,$6,$8, @1.first_line, @1.first_column);
+    }
 ;

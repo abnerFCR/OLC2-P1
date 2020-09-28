@@ -5,21 +5,23 @@ import { Retorno, Tipo } from '../Abstracto/Retorno';
 import { Type_ } from '../Objetos/Type_';
 import { Error_ } from '../Errores/Error';
 
-export class AccesoTipo extends Expresion{
+export class AsignacionIndTipo extends Expresion{
 
     private id1:string;
     private id2:string;
     private anterior:Expresion |null;
+    public expresionNueva:Expresion;
 
-    constructor(id1:string, id2:string, anterior:Expresion|null, fila:number, columna:number){
+    constructor(id1:string, id2:string, anterior:Expresion|null,nuevaExpresion, fila:number, columna:number){
         super(fila, columna);
         this.id1 = id1;
         this.id2 = id2;
         this.anterior = anterior;
+        this.expresionNueva =nuevaExpresion;
     }
 
     public ejecutar(entorno: Entorno): Retorno {
-
+        console.log(this);
         if(this.anterior == null){
             let variableId1 = entorno.getVar(this.id1);
             if(variableId1 == null){
@@ -31,11 +33,18 @@ export class AccesoTipo extends Expresion{
                 if(valorId1.getAtributo(this.id2) == null){
                     throw new Error_(this.linea, this.columna, "Semantico", "La variable '"+this.id2+"' no existe");
                 }
-                let respuesta= valorId1.getAtributo(this.id2).valor;
-                if(respuesta == null){
-                    return {valor:null, tipo:Tipo.TYPE}
+                if(this.expresionNueva == null){
+                    return {valor:valorId1.getAtributo(this.id2).valor, tipo:valorId1.getAtributo(this.id2).valor.tipo};
+                }else{
+                    let resultadoExpresion = this.expresionNueva.ejecutar(entorno);
+                    if(resultadoExpresion.tipo == valorId1.getAtributo(this.id2).tipo){
+                        valorId1.getAtributo(this.id2).valor = resultadoExpresion.valor;
+                    }else{
+                        throw new Error_(this.linea, this.columna, "Semantico", "El tipo de dato que desea asignar no coincide con el valor");
+                    }
+                    
                 }
-                return {valor:valorId1.getAtributo(this.id2).valor, tipo:valorId1.getAtributo(this.id2).valor.tipo};
+                
             }else{
                 throw new Error_(this.linea, this.columna, "Semantico", "No es una instancia de tipo");
             }
@@ -51,8 +60,15 @@ export class AccesoTipo extends Expresion{
             if(z == null){
                 throw new Error_(this.linea, this.columna, "Semantico", "No existe el parametro '"+this.id1+"' en este tipo");
             }
-            
-            return {valor: z?.valor, tipo:z?.valor};
+            let resultadoExpresion = this.expresionNueva.ejecutar(entorno);
+            console.log("------------------------------------------------");
+            console.log(resultadoExpresion);
+            if(z.tipo == resultadoExpresion.tipo){
+                x.getAtributo(this.id1).valor = resultadoExpresion.valor;
+            }else{
+                throw new Error_(this.linea,this.columna, "Semantico", "El tipo de atributo no coincide con el tipo del valor");
+            }
+            //return {valor: z?.valor, tipo:z?.valor};
         }
         return null;
     }   

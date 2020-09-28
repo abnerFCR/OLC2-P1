@@ -7,7 +7,7 @@ import { Simbolo } from '../Simbolo/Simbolo';
 
 export class AccesoArreglo extends Expresion {
 
-    private id: string;
+    public id: string;
     private indice: Expresion;
     private anterior: Expresion | null;
     public funcion: string;

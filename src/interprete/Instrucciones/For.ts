@@ -3,6 +3,7 @@ import { Expresion } from '../Abstracto/Expresion';
 import { Instruccion } from '../Abstracto/Instruccion';
 import { Tipo } from '../Abstracto/Retorno';
 import { Error_ } from '../Errores/Error';
+import { errores } from '../Errores/Errores';
 import { Entorno } from '../Simbolo/Entorno';
 import { Break } from './Break';
 import { Continue } from './Continue';
@@ -51,7 +52,7 @@ export class For extends Instruccion {
                     return resultado;
                 }
             } catch (error) {
-                
+                errores.push(error);
             }
             resCondicion = this.condicion.ejecutar(nuevoEntorno);
 

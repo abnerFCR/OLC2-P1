@@ -12,6 +12,7 @@ import { Error_ } from 'src/interprete/Errores/Error.js';
 import { Router } from '@angular/router';
 import { Funcion } from 'src/interprete/Instrucciones/Funcion';
 import { TranslationWidth } from '@angular/common';
+import { DeclaracionType } from 'src/interprete/Instrucciones/DeclaracionType.js';
 
 
 @Component({
@@ -101,6 +102,8 @@ export class AppComponent {
     for(const instr of ast){
       try{
         if(instr instanceof Funcion){
+          instr.ejecutar(env);
+        }else if(instr instanceof DeclaracionType){
           instr.ejecutar(env);
         }
       }catch{
