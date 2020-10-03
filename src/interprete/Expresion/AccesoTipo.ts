@@ -35,7 +35,10 @@ export class AccesoTipo extends Expresion{
                 if(respuesta == null){
                     return {valor:null, tipo:Tipo.TYPE}
                 }
-                return {valor:valorId1.getAtributo(this.id2).valor, tipo:valorId1.getAtributo(this.id2).valor.tipo};
+                if(respuesta instanceof Type_){
+                    //return {valor:valorId1.getAtributo(this.id2).valor, tipo:valorId1.getAtributo(this.id2).valor.tipo};    
+                }
+                return {valor:valorId1.getAtributo(this.id2).valor, tipo:valorId1.getAtributo(this.id2).tipo};
             }else{
                 throw new Error_(this.linea, this.columna, "Semantico", "No es una instancia de tipo");
             }
@@ -52,7 +55,7 @@ export class AccesoTipo extends Expresion{
                 throw new Error_(this.linea, this.columna, "Semantico", "No existe el parametro '"+this.id1+"' en este tipo");
             }
             
-            return {valor: z?.valor, tipo:z?.valor};
+            return {valor: z?.valor, tipo:z?.tipo};
         }
         return null;
     }   

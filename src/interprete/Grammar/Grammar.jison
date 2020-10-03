@@ -440,6 +440,14 @@ AsignacionVariable
     : ID '=' Expr 
     {
         $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
+        /*
+        
+    |ID '=' '{' ListaValoresTipo '}'
+    {
+        let nuevoE =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, '', $4);
+        $$ = AsignacionTipo($1, '', nuevoE, this.linea, this.columna);
+    }
+        */
     }
 ;
 
@@ -594,10 +602,15 @@ ElementoDeclaracion
     {
         $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, $6);
     }
-    |ID ':' ID '=' 'NULL'
+
+    |ID ':' ID '=' Expr
     {
-        $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, new Literal('null', @1.first_line, @1.first_column,4));
+        $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, $5);
+        /*
+        new Literal('null', @1.first_line, @1.first_column,4)
+        */
     }
+    
 ;
 
 
@@ -968,7 +981,7 @@ AsigIndividual
     }
     |AsigIndividual '.' ID 
     {
-        $$= new AsignacionIndTipo($3,'',$1,$1,null, @1.first_line, @1.first_column);
+        $$= new AsignacionIndTipo($3,'',$1,null, @1.first_line, @1.first_column);
     }
     |ID '.' ID
     {

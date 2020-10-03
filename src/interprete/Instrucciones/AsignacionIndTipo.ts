@@ -31,7 +31,7 @@ export class AsignacionIndTipo extends Expresion{
             if(variableId1?.valor instanceof Type_){
                 let valorId1 = variableId1.valor as Type_;
                 if(valorId1.getAtributo(this.id2) == null){
-                    throw new Error_(this.linea, this.columna, "Semantico", "La variable '"+this.id2+"' no existe");
+                    throw new Error_(this.linea, this.columna, "Semantico", "La variable '"+this.id2+"' no existe dentro de este tipo");
                 }
                 if(this.expresionNueva == null){
                     return {valor:valorId1.getAtributo(this.id2).valor, tipo:valorId1.getAtributo(this.id2).valor.tipo};
@@ -50,6 +50,7 @@ export class AsignacionIndTipo extends Expresion{
             }
         }else{
             let anterior = this.anterior.ejecutar(entorno);
+
             let x = anterior.valor as Type_;
 
             if(x == null){
@@ -59,6 +60,9 @@ export class AsignacionIndTipo extends Expresion{
             let z = x.getAtributo(this.id1);
             if(z == null){
                 throw new Error_(this.linea, this.columna, "Semantico", "No existe el parametro '"+this.id1+"' en este tipo");
+            }
+            if(this.expresionNueva == null){
+                return {valor:z.valor,tipo:z.valor.tipo};
             }
             let resultadoExpresion = this.expresionNueva.ejecutar(entorno);
             console.log("------------------------------------------------");
