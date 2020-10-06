@@ -1,38 +1,6 @@
  
 %{
-    const { Aritmetica, OperacionAritmetica } = require('../Expresion/Aritmetica');
-    const { Relacional, OperacionRelacional } = require('../Expresion/Relacional');
-    const { Acceso } = require('../Expresion/Acceso');
-    const { AccesoTipo } = require('../Expresion/AccesoTipo');
-    const { Ternario } = require('../Expresion/Ternario');
-    const { AccesoArreglo } = require('../Expresion/AccesoArreglo');
-    const { Literal} = require('../Expresion/Literal');
-    const { Imprimir } =require('../Instrucciones/Imprimir');
-    const { GraficarTs } =require('../Instrucciones/GraficarTs');
-    const { Break } =require('../Instrucciones/Break');
-    const { Return } =require('../Instrucciones/Return');
-    const { DeclaracionArreglo } =require('../Instrucciones/DeclaracionArreglo');
-    const { Continue } =require('../Instrucciones/Continue');
-    const { Switch } =require('../Instrucciones/Switch');
-    const { If } = require('../Instrucciones/If');
-    const { While } = require('../Instrucciones/While');
-    const { Arreglo } = require('../Objetos/Arreglo');
-    const { Simbolo } = require('../Simbolo/Simbolo');
-    const { DoWhile } = require('../Instrucciones/DoWhile');
-    const { For } = require('../Instrucciones/For');
-    const { IncreDecre } = require('../Instrucciones/IncreDecre');
-    const { Statement} = require('../Instrucciones/Statement');
-    const { Asignacion} = require('../Instrucciones/Asignacion');
-    const { AsignacionIndArreglo } = require('../Instrucciones/AsignacionIndArreglo');
-    const { Tipo, cuadro_texto } =require("../Abstracto/Retorno");
-    const { errores } =require('../Errores/Errores');
-    const { Error_ } =require('../Errores/Error');
-    const { Declaracion } = require('../Instrucciones/Declaracion');
-    const { Funcion } = require('../Instrucciones/Funcion');
-    const { Llamada } = require('../Instrucciones/Llamada');
-    const { ElementoDeclaracion, TipoDeclaracion } = require('../Util/ElementoDeclaracion');
-    const { Caso } = require('../Util/Caso');
-    const { DeclaracionType } = require('../Instrucciones/DeclaracionType');
+    const { Nodo } = require('../Arbol/Nodo');
 %}
 
 %lex
@@ -138,8 +106,7 @@ string3 (\`({escape}|{acceptedquote3})*\`)
 
 .  { 
     //cuadro_texto.errores_sintacticos_lexicos='Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column+'\n'; 
-    error=new Error_(yylloc.first_line, yylloc.first_column, 'Lexico','El caracter: " ' + yytext + ' ",  no pertenece al lenguaje');
-    errores.push(error);
+    
     //console.log(error);
 }
 
@@ -171,106 +138,111 @@ Init
 Instrucciones
     : Instrucciones Instruccion
     {
-        $1.push($2);
-        $$ = $1;
+        $$ = new Nodo("Instrucciones");
+        $$.add($1);
+        $$.add($2);
     }
     |Instruccion
     {
-        $$ = [$1];
+        $$ = new Nodo("Instrucciones",0);
+        $$.add($1);
     }
 ;
 
 Instruccion
     : Imprimir
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |DeclaracionVariable
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |AsignacionVariable ';'
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |IfSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |WhileSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |DoWhileSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |SwitchSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |IncreDecre ';'
     {
-        $$=$1;
+        $$= new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |DefinicionTypes ';'
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |GraficarTs ';'
     {
-        $$ =$1;
+        $$ = new Nodo("GraficarTs",0);
     }
     |'BREAK' ';'
     {
-        $$ =new Break(@1.first_line, @1.first_column);
+        $$ = new Nodo("Break",0);
     }
     |'CONTINUE' ';'
     {
-        $$ =new Continue(@1.first_line, @1.first_column);
+        $$ = new Nodo("Continue",0);
     }
     |DeclaracionArreglos ';'
     {
-        $$=$1;
+        $$ = new Nodo("Decl. Arreglo",0);
+        $$.add($1);
     }
     |ForNormal 
     {
-        $$=$1;
-    }
-    |Funcion 
-    {
-        $$=$1;
+        $$ = new Nodo("For1",0);
+        $$.add($1);
     }
     |ID '(' ListaExpr ')' ';'
     {
-        $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+        $$ = new Nodo("Llamada",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
     |ID '('')' ';'
     {
-        $$ =new Llamada($1, [], @1.first_line, @1.first_column);
+        $$ = new Nodo("Llamada",0);
+        $$.add(new Nodo($1,0));
     }
-    |'RETURN' Expr ';'
+    |Funcion 
     {
-        $$ = new Return($2,@1.first_line, @1.first_column);
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |AsigIndividual '=' Expr ';'
     {
-        var s = eval('$$');
-        var indice = s.length-1;
-        console.log("------------------------------------------------------------------>");
-        console.log(s[indice-3]);
-        s[indice-3].expresionNueva = $3;
-        $$=$1;
+        $$ = new Nodo("Asig. Indiv.",0);
+        $$.add($1);
+        $$.add($3);
     }
-    |error ';'
+    |'RETURN' Expr ';'
     {
-        error=new Error_(@1.first_line, @1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba');
-        errores.push(error);
-    }
-    |error '}'
-    {
-        error=new Error_(@1.first_line,@1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba');
-        errores.push(error);
+        $$ = new Nodo("Return",0);
+        $$.add($2);
     }
     
 ;
@@ -278,377 +250,443 @@ Instruccion
 Funcion
     :'FUNCTION' ID '(' ListaParametros ')' ':' TiposFuncion StatementFuncion
     {
-        //console.log("Soy el statement");
-        //console.log($8);
-        var s = eval('$$');
-        var ind = s.length - 1;
-        $$ = new Funcion(s[ind - 6], s[ind -4 ], s[ind-1],s[ind], @1.first_line, @1.first_column);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($2,0));
+        $$.add($4);
+        $$.add($7);
+        $$.add($8);
     }
     |'FUNCTION' ID '(' ListaParametros ')' StatementFuncion
     {
-        //console.log("Soy el statement");
-        //console.log($8);
-        var s = eval('$$');
-        var ind = s.length - 1;
-        $$ = new Funcion(s[ind - 4], s[ind -2 ], Tipo.VOID,s[ind], @1.first_line, @1.first_column);
+        $$ = new Nodo("Funcion",0);
+        $$.add(new Nodo($2,0));
+        $$.add($4);
+        $$.add($6);
     }
     |'FUNCTION' ID '(' ')' ':' TiposFuncion StatementFuncion
     {
-        //console.log("Soy el statement");
-        //console.log($8);
-        var s = eval('$$');
-        var ind = s.length - 1;
-        $$ = new Funcion(s[ind - 5], [], s[ind-1],s[ind], @1.first_line, @1.first_column);
+        $$ = new Nodo("Funcion",0);
+        $$.add(new Nodo($2,0));
+        $$.add($5);
     }
     |'FUNCTION' ID '(' ')' StatementFuncion
     {
-        //console.log("Soy el statement");
-        //console.log($8);
-        var s = eval('$$');
-        var ind = s.length - 1;
-        $$ = new Funcion(s[ind - 3], [], Tipo.VOID, s[ind], @1.first_line, @1.first_column);
+        $$ = new Nodo("Funcion",0);
+        $$.add(new Nodo($2,0));
+        $$.add($5);
     }
 ;
 
 ListaParametros
     :ElementoDeclaracion ListaParametrosPrima
     {
-        //console.log("Que paso");
-        var s = eval('$$');
-        var indice = s.length - 1;
-        if(s[indice]==undefined){
-            $$ = [s[indice-1]];
-        }else{
-            s[indice].unshift(s[indice-1]);
-            $$ = s[indice];
-        }
+        $$ = new Nodo("Lista Par.",0);
+        $$.add($1);
+        $$.add($2);
     }
 ;
 
 ListaParametrosPrima
     : ',' ElementoDeclaracion ListaParametrosPrima
     {
-        var s = eval('$$');
-        var indice = s.length - 1;
-        if(s[indice] != undefined){
-            s[indice].unshift(s[indice-1]);
-        }else{
-            s[indice] = [s[indice-1]];
-        }
-        $$= s[indice]; 
+        $$ = new Nodo("Lista Par. Prima",0);
+        $$.add($2);
+        $$.add($3);
     }
-    |{}
+    |{
+        $$ = new Nodo("Epsilon",0);
+    }
 ;
 
 TiposFuncion
     :TipoNormal
     {
-        $$=$1;
+        $$ = new Nodo("Tipos Funcion",0);
+        $$.add($1);
     }
     |'TIPOVOID'
     {
-        $$=Tipo.VOID;
+        $$ = new Nodo("Tipos Funcion",0);
+        $$.add(new Nodo("Void",0));
     }
     |ID
     {
-        $$={tipo:Tipo.TYPE, idTipo:$1};
+        $$ = new Nodo("Tipos Funcion",0);
+        $$.add(new Nodo($1,0));
     }
     |'TIPOARRAY'
     {
-        $$=Tipo.ARRAY;
+        $$ = new Nodo("Tipos Funcion",0);
+        $$.add(new Nodo("Array",0));
     }
 ;
 
 Imprimir
     : CONSOLELOG '(' Expr ')' ';'
     {   
-        var s = eval('$$');
-        console.log("----------------------------------VALOR---------------------------------------");
-        console.log(yytext-1);
-        $$ = new Imprimir($3, @1.first_line, @1.first_column);
+        $$ = new Nodo("Imprimir",0);
+        $$.add($3);
     }
 ;
 
 GraficarTs
     :'GRAFICAR_TS' '(' ')'
     {
-        $$ = new GraficarTs(@1.first_line,@1.first_column);
+        $$ = new Nodo("Graficarts",0);
     }
 ;
 
 DeclaracionVariable
     : 'LET' ListaDeclaraciones ';' 
     {
-        $$= new Declaracion('let', $2, @1.first_line, @1.first_column);
+        $$ = new Nodo("Decla. Var.",0);
+        $$.add($2);
     }
     | 'CONST' ListaDeclaraciones ';'
     {
-        $$ = new Declaracion('const',$2, @1.first_line, @1.first_column);
+        $$ = new Nodo("Decla. Var.",0);
+        $$.add($2);
     }   
 ; 
 
 AsignacionVariable
     : ID '=' Expr 
     {
-        $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
+        $$ = new Nodo("Asig Var.",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
 ;
 
 IfSt
     : 'IF' '(' Expr ')' Statement ElseSt
     {
-        $$ = new If($3, $5, $6, @1.first_line, @1.first_column);
+        $$ = new Nodo("If",0);
+        $$.add($3);
+        $$.add($5);
+        $$.add($6);
     }
 ;
 
 ElseSt
     : 'ELSE' Statement
     {
-        $$=$2;
+        $$ = new Nodo("Else",0);
+        $$.add($2);
     } 
     | 'ELSE' IfSt
     {
-        $$=$2;
+        $$ = new Nodo("Else",0);
+        $$.add($2);
     }
     | 
     {
-        $$=null;    
+        $$ = new Nodo("Epsilon",0);
     }
 ;
 
 WhileSt
     : 'WHILE' '(' Expr ')' Statement
     {
-        $$ = new While($3, $5, @1.first_line, @1.first_column);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add($3);
+        $$.add($5);
     }
 ;
 
 DoWhileSt
     : 'DO' Statement 'WHILE' '(' Expr ')' ';'
     {
-        $$ = new DoWhile($5, $2, @1.first_line, @1.first_column);
+        $$ = new Nodo("Do While",0);
+        $$.add($2);
+        $$.add($5);
     }
 ;
 
 ForNormal
     :'FOR' '(' DeclaracionVariable Expr ';' OpcAsignacion ')' Statement
     {
-        $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column);
+        $$ = new Nodo("For1",0);
+        $$.add($3);
+        $$.add($4);
+        $$.add($6);
+        $$.add($8);
     }
 ;
 
 OpcAsignacion
     :AsignacionVariable
     {
-        $$ = $1;
+        $$ = new Nodo("Opc. asig",0);
+        $$.add($1);
     }
     |IncreDecre
     {
-        $$= $1;
+        $$ = new Nodo("Opc. asig",0);
+        $$.add($1);
     }
 ;
 
 SwitchSt
     : 'SWITCH' '(' Expr ')' '{' ListaCasos '}' 
     {
-        $$ = new Switch($3, $6, @1.first_line, @1.first_column);
+        $$ = new Nodo("Switch",0);
+        $$.add($3);
+        $$.add($6);
     }
 ;
 
 ListaCasos
     : ListaCasos Caso 
     {
-        $1.push($2);
-        $$ = $1;
+        $$ = new Nodo("Lista Casos",0);
+        $$.add($1);
+        $$.add($2);
     }
     |Caso 
     {
-        $$=[$1];
+        $$ = new Nodo("Lista Casos",0);
+        $$.add($1);
     }
 ;
 
 Caso
     : 'CASE' Expr ':' Statement
     {
-        $$ = new Caso($2, $4, @1.first_line, @1.first_column);
+        $$ = new Nodo("Caso",0);
+        $$.add($2);
+        $$.add($4);
     }
     | 'DEFAULT' ':' Statement
     {
-        $$ = new Caso(null, $3, @1.first_line, @1.first_column);
+        $$ = new Nodo("Caso",0);
+        $$.add(new Nodo("Default",0));
+        $$.add($3);
     }
     | 'CASE' Expr ':' Instrucciones
     {
-        $$ = new Caso($2, $4, @1.first_line, @1.first_column);
+        $$ = new Nodo("Caso",0);
+        $$.add($2);
+        $$.add($4);
     }
     | 'DEFAULT' ':' Instrucciones
     {
-        $$ = new Caso(null, $3, @1.first_line, @1.first_column);
+        $$ = new Nodo("Caso",0);
+        $$.add(new Nodo("Default",0));
+        $$.add($3);
     }
 ;
 
 IncreDecre
     : ID '++'
     {   
-        $$ = new IncreDecre('incre', new Acceso($1, @1.first_line, @1.first_column), @1.first_line, @1.first_column);
+        $$ = new Nodo("Incre Decre",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo("++",0));
     }
     |ID '--'
     {
-        $$ = new IncreDecre('decre', new Acceso($1, @1.first_line, @1.first_column), @1.first_line, @1.first_column);
+        $$ = new Nodo("Incre Decre",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo("--",0));
     }
 ;
 
 Statement
     : '{' Instrucciones '}' 
     {
-        $$ = new Statement($2, @1.first_line, @1.first_column);
+        $$ = new Nodo("Statement",0);
+        $$.add($2);
     }
     | '{' '}' 
     {
-        $$ = new Statement(new Array(), @1.first_line, @1.first_column);
+        $$ = new Nodo("Statement",0);
     }
 ;
 
 ListaDeclaraciones
     :ListaDeclaraciones ',' ElementoDeclaracion
     {
-        $1.push($3);
-        $$ = $1;
+        $$ = new Nodo("Lista Decla.",0);
+        $$.add($1);
+        $$.add($3);
     }
     |ElementoDeclaracion
     {
-        $$=[$1];
+        $$ = new Nodo("Lista Decla.",0);
+        $$.add($1);
     }
 ;
 
 ElementoDeclaracion
     :ID ':' TipoNormal '=' Expr
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR,$1,$3,'',$5);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
+        $$.add($5);
     }
     |ID ':' TipoNormal
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1,$3,'',null);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
     |ID '=' Expr
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_VALOR,$1,'',null,$3);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
     |ID
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID,$1, null, '',null);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($1,0));
     }
     |ID ':' ID
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1, Tipo.TYPE, $3, null);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo($3,0));
+        $$.add($5);
     }
     |ID ':' ID '=' '{' ListaValoresTipo '}'
     {
-        $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, $6);
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo($3,0));
+        $$.add($6);
     }
     |ID ':' ID '=' 'NULL'
     {
-        $$ =  new ElementoDeclaracion(TipoDeclaracion.ID_TIPO_VALOR, $1, Tipo.TYPE, $3, new Literal('null', @1.first_line, @1.first_column,4));
+        $$ = new Nodo("Elem. Decla",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo($3,0));
+        $$.add(new Nodo("Null",0));
     }
 ;
 
 ListaValoresTipo
     :ListaValoresTipo ',' ValorType
     {
-        $1.push($3);
-        $$ = $1;
+        $$ = new Nodo("Lista Val. Tipo",0);
+        $$.add($1);
+        $$.add($3);
     }
     |ValorType
     {
-        $$=[$1];
+        $$ = new Nodo("Lista Val. Tipo",0);
+        $$.add($1);
     }
 ;
 
 ValorType
     :ID ':' Expr
     {
-        $$={id:$1, valor:$3};
+        $$ = new Nodo("Valor Type",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
     |ID ':' '{' ListaValoresTipo '}'
     {
-        $$ = {id:$1, valor:$4}
+        $$ = new Nodo("Valor Types",0);
+        $$.add(new Nodo($1,0));
+        $$.add($4);
     }
 ;
 
 TipoNormal
     :'TIPOSTRING'
     {
-        $$=Tipo.STRING;
+        $$ = new Nodo("Tipo Normal",0);
+        $$.add(new Nodo($1,0));
     }
     |'TIPOBOOLEAN'
     {
-        $$=Tipo.BOOLEAN;
+        $$ = new Nodo("Tipo Normal",0);
+        $$.add(new Nodo($1,0));
     }
     |'TIPONUMBER'
     {
-        $$=Tipo.NUMBER;
+        $$ = new Nodo("Tipo Normal",0);
+        $$.add(new Nodo($1,0));
     }
 ;
 
 DefinicionTypes
     : 'TYPE' ID '=' '{' ListaDefiniciones '}'
     {
-        $$ = new DeclaracionType($2, $5, @1.first_line, @1.first_column);
+        $$ = new Nodo("Def. Types",0);
+        $$.add(new Nodo($2,0));
+        $$.add($5);
     }
 ;
 
 ListaDefiniciones
     : ListaDefiniciones ',' DefinicionAtributo
     {
-        $1.push($3);
-        $$=$1;
+        $$ = new Nodo("Lista Def.",0);
+        $$.add($1);
+        $$.add($3);
     }
     |DefinicionAtributo
     {
-        $$=[$1];
+        $$ = new Nodo("Lista Def.",0);
+        $$.add($1);
     }
 ;
 
 DefinicionAtributo
     :ID ':' ID
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1,Tipo.TYPE,$3,null);
+        $$ = new Nodo("Def. Atributo",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo($3,0));
     }
     |ID ':' TipoNormal
     {
-        $$ = new ElementoDeclaracion(TipoDeclaracion.ID_TIPO,$1,$3,'',null);
+        $$ = new Nodo("Def. Atributo",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
 ;
 
 DeclaracionArreglos
     :ListaDimensiones '=' '[' ValoresArreglo ']'
     {
-        $$=new DeclaracionArreglo($1, $4, @1.first_line,@1.first_column);
+        $$ = new Nodo("Decla. Arreglos",0);
+        $$.add($1);
+        $$.add($4);
     }
     |ListaDimensiones '=' '[' ListaExpr ']'
     {
-        $$=new DeclaracionArreglo($1,$4, @1.first_line,@1.first_column);
+        $$ = new Nodo("Decla. Arreglos",0);
+        $$.add($1);
+        $$.add($4);
     }
     |ListaDimensiones '=' '['']'
     {
-        $$=new DeclaracionArreglo($1,[],@1.first_line,@1.first_column);
+        $$ = new Nodo("Decla. Arreglos",0);
+        $$.add($1);
     }
     |ListaDimensiones
     {
-        $$=new DeclaracionArreglo($1,[],@1.first_line,@1.first_column);
+        $$ = new Nodo("Decla. Arreglos",0);
+        $$.add($1);
     }
 ;
 
 ListaDimensiones
     :ListaDimensiones '[' ']'
     {   
-        var s = eval('$$');
-        var indice = s.length-1;
-        console.log(s[indice-2]);
-        $$=new Simbolo(new Arreglo([$1],s[indice -2].valor.tipo), s[indice - 2].id, Tipo.ARRAY, s[indice-2].tipoSimbolo,s[indice-2].valor.tipo.idTipo);
+        $$ = new Nodo("Lista Dim.",0);
+        $$.add($1);
     } 
     |'LET' ID ':' Tipos '[' ']'
     {
-        $$=new Simbolo(new Arreglo([], $4), $2, Tipo.ARRAY, $1 ,$4.idTipo);
+        $$ = new Nodo("Lista Dim.",0);
+        $$.add(new Nodo($2,0));
+        $$.add($4);
     }
 
 ;
@@ -656,184 +694,253 @@ ListaDimensiones
 ValoresArreglo
     :ValoresArreglo ',' ValorArreglo
     {
-        $1.push($3);
-        $$ = $1;
+        $$ = new Nodo("Valores Arreglo",0);
+        $$.add($1);
+        $$.add($3);
         
     }
     |ValorArreglo
     {
-        $$=[$1];
+        $$ = new Nodo("Valores Arreglo",0);
+        $$.add($1);
     }
 ;
 
 ValorArreglo
     :'[' ListaExpr ']'
     {
-        $$=$2;
+        $$ = new Nodo("Valor Arreglo",0);
+        $$.add($2);
     }
     |'[' ValoresArreglo ']'
     {   
-        $$ = $2;
+        $$ = new Nodo("Valor Arreglo",0);
+        $$.add($2);
     }
 ;
 
 ListaExpr
     :ListaExpr ',' Expr
     {
-        $1.push($3);
-        $$=$1;
+        $$ = new Nodo("Lista Expr",0);
+        $$.add($1);
+        $$.add($3);
     }
     |Expr
     {
-        $$=[$1];
+        $$ = new Nodo("Lista Expr",0);
+        $$.add($1);
     }
 ;
 
 Tipos
     :TipoNormal
     {
-        $$={tipo:$1, idTipo:''};
+        $$ = new Nodo("Tipos",0);
+        $$.add($1);
     }
     |ID
     {
-        $$ = {tipo:Tipo.TYPE, idTipo:$1};
+        $$ = new Nodo("Tipos",0);
+        $$.add(new Nodo($1,0));
     }
 ;
 
 Expr
     : Expr '+' Expr
     {
-        $$ = new Aritmetica($1, $3, OperacionAritmetica.SUMA, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("+",0));
+        $$.add($3);
     }       
     | Expr '-' Expr
     {
-        $$ = new Aritmetica($1, $3, OperacionAritmetica.RESTA, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("-",0));
+        $$.add($3);
     }
     | Expr '*' Expr
     { 
-        $$ = new Aritmetica($1, $3, OperacionAritmetica.MULTIPLICACION, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("*",0));
+        $$.add($3);
     }       
     | Expr '/' Expr
     {
-        $$ = new Aritmetica($1, $3, OperacionAritmetica.DIVISION, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("/",0));
+        $$.add($3);
     }
     | Expr '**' Expr
     {
-        $$ = new Aritmetica($1, $3, OperacionAritmetica.POTENCIA, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("**",0));
+        $$.add($3);
     }
     | Expr '%' Expr
     {
-        $$ = new Aritmetica($1, $3, OperacionAritmetica.MODULO, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("%",0));
+        $$.add($3);
     }
     | '-' Expr
     {
-        $$ = new Aritmetica($2, $2, OperacionAritmetica.NEGACION, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add(new Nodo("-",0));
+        $$.add($2);
     }
     | Expr '++'
     {
-        $$ = new Aritmetica($1, $1, OperacionAritmetica.INCREMENTO, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("++",0));
     }
     | Expr '--' 
     {
-        $$ = new Aritmetica($1, $1, OperacionAritmetica.DECREMENTO, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("--",0));
     }
     | Expr '||' Expr
     {
-        $$ = new Relacional($1, $3, OperacionRelacional.OR, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("||",0));
+        $$.add($3);
     }
     | Expr '&&' Expr
     { 
-        $$ = new Relacional($1, $3, OperacionRelacional.AND, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("&&",0));
+        $$.add($3);
     }
     | '!' Expr
     { 
-        $$ = new Relacional($2, $2, OperacionRelacional.NOT, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add(new Nodo("!",0));
+        $$.add($2);
     }   
     | Expr '>=' Expr
     {
-        $$ = new Relacional($1, $3, OperacionRelacional.MAYORIGUALQUE, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo(">=",0));
+        $$.add($3);
     }
     | Expr '<=' Expr
     { 
-        $$ = new Relacional($1, $3, OperacionRelacional.MENORIGUALQUE, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("<=",0));
+        $$.add($3);
     }    
     | Expr '>' Expr
     {
-        
-        $$ = new Relacional($1, $3, OperacionRelacional.MAYORQUE, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo(">",0));
+        $$.add($3);
     }
     | Expr '<' Expr
     {
-        $$ = new Relacional($1, $3, OperacionRelacional.MENORQUE, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("<",0));
+        $$.add($3);
     }
     | Expr '==' Expr
     {
-        $$ = new Relacional($1, $3, OperacionRelacional.IGUALACION, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("==",0));
+        $$.add($3);
     }
     | Expr '!=' Expr
     { 
-        $$ = new Relacional($1, $3, OperacionRelacional.DIFERENCIACION, @1.first_line,@1.first_column);
+        $$ = new Nodo("E",0);
+        $$.add($1);
+        $$.add(new Nodo("!=",0));
+        $$.add($3);
     }
     | F
     {
-        
-        $$ = $1;
+        $$ = new Nodo("F",0);
+        $$.add($1);
     }
 ;
 
 
 F   : '(' Expr ')'
     { 
-        $$ = $2;
+        $$ = new Nodo("F", 0);
+        $$.add($2);
     }
     | DECIMAL
     { 
-        $$ = new Literal($1, @1.first_line, @1.first_column, 0);
+        $$ = new Nodo("Decimal", 0);
+        $$.add(new Nodo($1,0));
     }
     | NUMBER
     { 
-        $$ = new Literal($1, @1.first_line, @1.first_column, 1);
+        $$ = new Nodo("Numero", 0);
+        $$.add(new Nodo($1,0));
     }
     | STRING
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 2);
+        $$ = new Nodo("String", 0);
+        $$.add(new Nodo($1.slice(1,-1),0));
     }
     | STRING2
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 2);
+        $$ = new Nodo("String", 0);
+        $$.add(new Nodo($1.slice(1,-1),0));
     }
     | STRING3
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column, 2);
+        $$ = new Nodo("String", 0);
+        $$.add(new Nodo($1.slice(1,-1),0));
     }
     | TRUE
     {
-        $$ = new Literal(true, @1.first_line, @1.first_column, 3);
-        
+        $$ = new Nodo("True", 0);
     }
     | FALSE
     {
-        $$ = new Literal(false, @1.first_line, @1.first_column, 3);
+        $$ = new Nodo("False", 0);
     }
     |NuevoAcceso
     {
-        $$ = $1;
+        $$ = new Nodo("Nuevo Acceso",0);
+        $$.add($1);
     }
     |NULL 
     {
-        $$ = new Literal($1, @1.first_line, @1.first_column,4);
+        $$ = new Nodo("Null",0);
     }
     |ID '(' ListaExpr ')' 
     {
-        $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+        $$ = new Nodo("Llamada",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
     |ID '(' ')' 
     {
-        $$ =new Llamada($1, [], @1.first_line, @1.first_column);
+        $$ = new Nodo("Llamada", 0);
+        $$.add(new Nodo($1,0));
     }
     | Expr '?' Expr ':' Expr
     {
-        $$=new Ternario($1,$3,$5, @1.first_line, @1.first_column);
+        $$ = new Nodo("F",0);
+        $$.add($1);
+        $$.add($3);
+        $$.add($5);
     }
     
 ;
@@ -841,48 +948,67 @@ F   : '(' Expr ')'
 NuevoAcceso
     :Accesos
     {
-        $$=$1;
+        $$ = new Nodo("Nuevo Acceso",0);
+        $$.add($1);
     }
     |Acceso
     {
-        $$=$1;
+        $$ = new Nodo("Nuevo Acceso",0);
+        $$.add($1);
     }
     |ID FuncionArreglo
     {
-        $$ = new AccesoArreglo($1,null,null,$2.funcion,$2.valor, @1.first_line, @1.first_column);
+        $$ = new Nodo("Nuevo Acceso",0);
+        $$.add(new Nodo($1,0));
+        $$.add($2);
     }
 ;
 Acceso
     :ID
     {
-        $$ = new Acceso($1, @1.first_line, @1.first_column);
+        $$ = new Nodo("Acceso",0);
+        $$.add(new Nodo($1,0));
     }
 ;
 
 Accesos
     :Accesos '.' ID
     {
-        $$ = new AccesoTipo($3,'', $1, @1.first_line, @1.first_column);
+        $$ = new Nodo("Accesos",0);
+        $$.add($1);
+        $$.add(new Nodo($3,0));
     }
     |Accesos '[' Expr ']'
     {
-        $$ = new AccesoArreglo('',$3,$1,'',null, @1.first_line, @1.first_column);
+        $$ = new Nodo("Accesos",0);
+        $$.add($1);
+        $$.add($3);
     }
     |Accesos '[' Expr ']' FuncionArreglo
     {
-        $$ = new AccesoArreglo('',$3,$1,$5.funcion,$5.valor, @1.first_line, @1.first_column);
+        $$ = new Nodo("Accesos",0);
+        $$.add($1);
+        $$.add($3);
+        $$.add($5);
     }
     |ID '.' ID 
     {
-        $$ =  new AccesoTipo($1, $3, null, @1.first_line, @1.first_column);
+        $$ = new Nodo("Accesos",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo($3,0));
     }
     |ID '[' Expr ']' FuncionArreglo
     {
-        $$ = new AccesoArreglo($1,$3,null,$5.funcion,$5.valor, @1.first_line, @1.first_column);
+        $$ = new Nodo("Accesos",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
+        $$.add($5);
     }
     |ID '[' Expr ']'
     {
-        $$ = new AccesoArreglo($1,$3,null,'',null, @1.first_line, @1.first_column);
+        $$ = new Nodo("Accesos",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
     
 ;
@@ -890,15 +1016,16 @@ Accesos
 FuncionArreglo
     :'POP' '(' ')' 
     {
-        $$={funcion:$1, valor:null};
+        $$ = new Nodo("Pop",0);
     }
     |'PUSH' '(' Expr ')'
     {
-        $$={funcion:$1, valor:$3};
+        $$ = new Nodo("Push",0);
+        $$.add($3);
     }
     |'LENGTH'
     {
-        $$={funcion:$1, valor:null};
+        $$ = new Nodo("Length",0);
     }
 ;
 
@@ -906,148 +1033,146 @@ FuncionArreglo
 AsigIndividual
     :AsigIndividual '[' Expr ']' 
     {
-        $$ = new AsignacionIndArreglo('',$3,$1,'',null, @1.first_line, @1.first_column);
+        $$ = new Nodo("Asg. Ind.",0);
+        $$.add($1);
+        $$.add($3);
     }
     |ID '[' Expr ']'
     {
-        $$ = new AsignacionIndArreglo($1,$3,null,'',null, @1.first_line, @1.first_column);
+        $$ = new Nodo("Asg. Ind.",0);
+        $$.add($1);
+        $$.add($3);
     }
 ;
 
 StatementFuncion
     : '{' InstruccionesFuncion '}' 
     {
-        $$ = new Statement($2, @1.first_line, @1.first_column);
+        $$ = new Nodo("Statement Func.",0);
+        $$.add($2);
     }
     | '{' '}' 
     {
-        $$ = new Statement(new Array(), @1.first_line, @1.first_column);
+       // $$ = new Statement(new Array(), @1.first_line, @1.first_column);
+       $$ = new Nodo("Epsilon",0);
     }
 ;
 
 InstruccionesFuncion
     :InstruccionFuncion InstruccionesFuncionPrima
     {
-        //console.log("Que paso");
-        var s = eval('$$');
-        var indice = s.length - 1;
-        if(s[indice]==undefined){
-            $$ = [s[indice-1]];
-        }else{
-            s[indice].unshift(s[indice-1]);
-            $$ = s[indice];
-        }
-        
+        $$ = new Nodo("Inst. Funcion");
+        $$.add($1);
+        $$.add($2);
     }
 ;
 InstruccionesFuncionPrima
     :InstruccionFuncion InstruccionesFuncionPrima
     {
-        var s = eval('$$');
-        var indice = s.length - 1;
-        if(s[indice] != undefined){
-            s[indice].unshift(s[indice-1]);
-        }else{
-            s[indice] = [s[indice-1]];
-        }
-        $$= s[indice];  
+        $$ = new Nodo("Instr. Funcion Prima",0);
+        $$.add($1); 
+        $$.add($2);
     }
     |
     {
+        $$ = new Nodo("Epsilon",0);
     }
 ;
 
 InstruccionFuncion
     : Imprimir
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |DeclaracionVariable
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |AsignacionVariable ';'
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |IfSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |WhileSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |DoWhileSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |SwitchSt
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |IncreDecre ';'
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |DefinicionTypes ';'
     {
-        $$=$1;
+        $$ = new Nodo("Definicion Type",0);
+        $$.add($1);
     }
     |GraficarTs ';'
     {
-        $$ =$1;
+        $$ = new Nodo("GraficarTs",0);
     }
     |'BREAK' ';'
     {
-        $$ =new Break(@1.first_line, @1.first_column);
+        $$ = new Nodo("Break",0);
     }
     |'CONTINUE' ';'
     {
-        $$ =new Continue(@1.first_line, @1.first_column);
+        $$ = new Nodo("Continue",0);
     }
     |DeclaracionArreglos ';'
     {
-        $$=$1;
+        $$ = new Nodo("Decl. Arreglo",0);
+        $$.add($1);
     }
     |ForNormal 
     {
-        $$=$1;
+        $$ = new Nodo("For1",0);
+        $$.add($1);
     }
     |ID '(' ListaExpr ')' ';'
     {
-        $$ =new Llamada($1, $3, @1.first_line, @1.first_column);
+        $$ = new Nodo("Llamada",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
     }
     |ID '('')' ';'
     {
-        $$ =new Llamada($1, [], @1.first_line, @1.first_column);
+        $$ = new Nodo("Llamada",0);
+        $$.add(new Nodo($1,0));
     }
     |Funcion 
     {
-        $$=$1;
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
     }
     |AsigIndividual '=' Expr ';'
     {
-        var s = eval('$$');
-        var indice = s.length-1;
-        console.log("------------------------------------------------------------------>");
-        console.log(s[indice-3]);
-        s[indice-3].expresionNueva = $3;
-        $$=$1;
+        $$ = new Nodo("Asig. Indiv.",0);
+        $$.add($1);
+        $$.add($3);
     }
     |'RETURN' Expr ';'
     {
-        $$ = new Return($2,@1.first_line, @1.first_column);
-    }
-    |error ';'
-    {
-        error=new Error_(@1.first_line, @1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba(Una instruccion no pertenece a la funcion)');
-        errores.push(error);
-    }
-    |error '}'
-    {
-        error=new Error_(@1.first_line,@1.first_column, 'Semantico','El caracter: " ' + yytext + ' ",  no se esperaba (Una instruccion no pertenece a la funcion)');
-        errores.push(error);
+        $$ = new Nodo("Return",0);
+        $$.add($2);
     }
     
 ;

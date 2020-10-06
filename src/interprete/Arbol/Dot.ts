@@ -1,56 +1,58 @@
 import { Nodo } from "./Nodo";
-//import {digraph, INode} from 'ts-graphviz';
-import {Graph, digraph, Node} from 'd3-graphviz';
 
-export class Dot{
+export class Dot {
 
-    contador:number;
-    grafo:string;
+    contador: number;
+    grafo: string;
 
-    constructor(){
+    constructor() {
         this.contador = 0;
         this.grafo = '';
     }
 
+    codigoAST(raiz: Nodo): string {
 
-    codigoAST(raiz:Nodo){
-
-        //this.grafo = "digraph G{";
-        //this.grafo += "node[shape =\"hexagon\"]; \n";
-        var arbol = digraph('G');
-        //this.grafo += "nodo0[label=\"" + this.limpiar(raiz.etiqueta) + "\"];\n";
-        
-        let nodo0 = arbol.addNode('nodo0', {'label':raiz.etiqueta });
+        this.grafo = "digraph G{\n";
+        this.grafo += "node[shape =\"hexagon\"]; \n";
         this.contador = 1;
-        
-        this.recorrerAST(arbol, nodo0, raiz);
-        console.log(arbol.to_dot());
-        arbol.output( "png", "AST.png" );
-    
+        this.grafo += this.recorrerAST(raiz);
+        this.grafo += "\n}";
+        console.log(this.grafo);
+        return this.grafo;
     }
 
-    limpiar(cadena:string):string{
-        cadena = cadena.replace('\\', '\\\\');
-        cadena = cadena.replace('\"', '');
-        cadena = cadena.replace('\n', '\\n');
+    limpiar(cadena: string): string {
+        if (cadena != undefined && cadena != null) {
+            cadena = cadena.replace('\\', '\\\\');
+            cadena = cadena.replace('\'', '');
+            cadena = cadena.replace('\"', '');
+            cadena = cadena.replace('\"', '');
+            cadena = cadena.replace('\n', '\\n');
+        }
         return cadena;
     }
 
-    recorrerAST(arbol:Graph, padre:Node, hijo:Nodo){
-        hijo.hijos.forEach(element => {
-            //let nombre_hijo = 'nodo' + this.contador;
-            //this.grafo += nombre_hijo + '[label=\"' + this.limpiar(element.etiqueta) + '\"];\n';
-            let nodo_hijo = arbol.addNode('nodo' + this.contador, {'label': this.limpiar(element.etiqueta)});
-            //this.grafo += padre + "->" + nombre_hijo + ";\n";
-            arbol.addEdge(padre, nodo_hijo);
-            this.contador++;
-            this.recorrerAST(arbol, nodo_hijo, element);
-        });
+    recorrerAST(raiz: Nodo) {
+
+        let cuerpoRecorridoArbol: string = "";
+        this.contador++;
+        var padre: string = "nodo" + this.contador;
+
+        if (raiz.valor != null || raiz.valor != undefined) {
+
+            cuerpoRecorridoArbol += padre + "[label = \"" + this.limpiar(raiz.etiqueta) + "\\n" + raiz.valor + "\"];\n";
+        }
+        else {
+            cuerpoRecorridoArbol += padre + "[label = \"" + this.limpiar(raiz.etiqueta) + "\"];";
+        }
+        if (raiz.hijos == null || raiz.hijos == undefined) {
+            return cuerpoRecorridoArbol;
+        }
+        //for(let nodo of raiz.hijos){
+        for (let i = 0; i < raiz.hijos.length; i++) {
+            cuerpoRecorridoArbol += padre + " -> nodo" + (this.contador + 1) + ";\n";
+            cuerpoRecorridoArbol += this.recorrerAST(raiz.hijos[i]);
+        }
+        return cuerpoRecorridoArbol;
     }
-
-
-
-
-
-
 }

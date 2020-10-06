@@ -56,7 +56,7 @@ export class AppComponent {
   };
 
   public ejecutar() {
-
+    cuadro_texto.entrada = this.entrada.toString();
     errores.length = 0;
     const env = new Entorno(null);
     this.consola_salida = "";
@@ -140,9 +140,7 @@ export class AppComponent {
 
 
   public reportes(){
-    
     this.router.navigate(['/reportes']);
-  
   }
 
 
