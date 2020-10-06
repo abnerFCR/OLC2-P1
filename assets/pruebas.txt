@@ -1200,3 +1200,54 @@ let arreglo:number[][]=[[1,2,3],[4,5,6],[7,8,9]];
 for(let iterador in arreglo[2]){
   console.log(arreglo[iterador]);
 }
+//------------------------TIPOS COMPONER PARA QUE JALE EL Arbol
+
+function primera(nodin:nodo):nodin{
+	if(nodin.index < 9){
+		nodin.index = 111;
+	  return nodin;
+	}
+  nodin.index =112;
+  return nodin;
+}
+
+type nodo={
+	index:number,
+  	siguiente:nodo,
+  	nombre:string
+};
+function n1():void{
+  let raiz:nodo = {
+	  index: 1,
+	  siguiente: null,
+	  nombre: "Soy raiz1"
+  };
+
+  console.log(raiz.nombre);
+
+  let hijoizq:nodo = {
+	  index:2,
+	  siguiente:raiz,
+	  nombre:"Hijo izq"
+  };
+  let hijoderecho:nodo={
+	  index:3,
+	  siguiente:null,
+	  nombre:"hijo Der"
+  };
+
+  hijoderecho.siguiente  = hijoizq;
+  console.log(hijoderecho.index);
+  let hijocentro:nodo = null;
+  console.log(hijocentro);
+  console.log(hijoizq.siguiente.nombre);
+  console.log(hijoderecho.siguiente.siguiente.index);
+  hijoderecho.siguiente.siguiente.index=9;
+  hijoizq.siguiente.index = 10;
+  console.log(raiz.index);
+  console.log(hijoderecho.siguiente.siguiente.index);
+  console.log(hijoizq.siguiente.index);
+	let nuevo =primera(hijoderecho);  
+	console.log(nuevo.index);
+}
+n1();
