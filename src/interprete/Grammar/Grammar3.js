@@ -177,7 +177,7 @@ case 31:
         this.$ = "function "+$$[$0-3]+"()"+$$[$0];
     
 break;
-case 32:
+case 32: case 42:
 
         this.$ = $$[$0-1]+$$[$0];
     
@@ -205,11 +205,6 @@ break;
 case 38:
 
         this.$="[]";
-    
-break;
-case 42:
-
-        this.$ = $$[$0-1];
     
 break;
 case 43:

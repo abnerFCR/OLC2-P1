@@ -326,7 +326,7 @@ TiposFuncion
     }
     |TipoNormal ListaCorh
     {
-        $$ = $1;
+        $$ = $1+$2;
     }
 ;
 
