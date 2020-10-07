@@ -1,4 +1,4 @@
- 
+
 %{
     const { Nodo } = require('../Arbol/Nodo');
 %}
@@ -19,7 +19,6 @@ string2 (\'({escape}|{acceptedquote2})*\')
 string3 (\`({escape}|{acceptedquote3})*\`)
 
 %%
-//TODO si falla algo que no se que es quitar el eof
 \s+                   /* skip whitespace */ 
 "/""/"([^\n])*([\n]|<<EOF>>)                  //console.log("imprime comentario "+yytext);
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] //console.log("imprime comentario Multilinea"+yytext);
@@ -93,6 +92,8 @@ string3 (\`({escape}|{acceptedquote3})*\`)
 "break"                 return 'BREAK'
 "continue"              return 'CONTINUE'
 "for"                   return 'FOR'
+"of"                   return 'OF'
+"in"                    return 'IN'
 "function"              return 'FUNCTION'
 "void"                  return "TIPOVOID"
 "return"                  return "RETURN"  
@@ -106,7 +107,8 @@ string3 (\`({escape}|{acceptedquote3})*\`)
 
 .  { 
     //cuadro_texto.errores_sintacticos_lexicos='Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column+'\n'; 
-    
+    error=new Error_(yylloc.first_line, yylloc.first_column, 'Lexico','El caracter: " ' + yytext + ' ",  no pertenece al lenguaje');
+    errores.push(error);
     //console.log(error);
 }
 
@@ -117,7 +119,7 @@ string3 (\`({escape}|{acceptedquote3})*\`)
 %left '&&'
 %left '==', '!='
 %left '>=', '<=', '<', '>'
-%left '+' '-'
+%left '+' '-' 
 %left '*' '/' '%'
 %right '**'
 $right '!'
@@ -217,6 +219,21 @@ Instruccion
         $$ = new Nodo("For1",0);
         $$.add($1);
     }
+    |ForOf 
+    {
+        $$ = new Nodo("For2",0);
+        $$.add($1);
+    }
+    |ForIn 
+    {
+        $$ = new Nodo("For3",0);
+        $$.add($1);
+    }
+    |Funcion 
+    {
+        $$ = new Nodo("Instruccion",0);
+        $$.add($1);
+    }
     |ID '(' ListaExpr ')' ';'
     {
         $$ = new Nodo("Llamada",0);
@@ -228,10 +245,20 @@ Instruccion
         $$ = new Nodo("Llamada",0);
         $$.add(new Nodo($1,0));
     }
-    |Funcion 
+    |ID  '=' '{' ListaValoresTipo '}' ';'
     {
-        $$ = new Nodo("Instruccion",0);
-        $$.add($1);
+        $$ = new Nodo("Asig. Indv",0);
+        $$.add(new Nodo($1,0));
+        $$.add($4);
+    }
+    |'RETURN' Expr ';'
+    {
+        $$ = new Nodo("Return",0);
+        $$.add($2);
+    }
+    |'RETURN' ';'
+    {
+        $$ = new Nodo("Return",0);
     }
     |AsigIndividual '=' Expr ';'
     {
@@ -239,12 +266,12 @@ Instruccion
         $$.add($1);
         $$.add($3);
     }
-    |'RETURN' Expr ';'
+    |AsigIndividual '=' '['']' ';'
     {
-        $$ = new Nodo("Return",0);
-        $$.add($2);
+        $$ = new Nodo("Asig. Indiv.",0);
+        $$.add($1);
+        $$.add(new Nodo("[]",0));
     }
-    
 ;
 
 Funcion
@@ -267,7 +294,8 @@ Funcion
     {
         $$ = new Nodo("Funcion",0);
         $$.add(new Nodo($2,0));
-        $$.add($5);
+        $$.add($6);
+        $$.add($7);
     }
     |'FUNCTION' ID '(' ')' StatementFuncion
     {
@@ -278,7 +306,7 @@ Funcion
 ;
 
 ListaParametros
-    :ElementoDeclaracion ListaParametrosPrima
+    :ElementoParametro ListaParametrosPrima
     {
         $$ = new Nodo("Lista Par.",0);
         $$.add($1);
@@ -287,15 +315,34 @@ ListaParametros
 ;
 
 ListaParametrosPrima
-    : ',' ElementoDeclaracion ListaParametrosPrima
+    : ',' ElementoParametro ListaParametrosPrima
     {
         $$ = new Nodo("Lista Par. Prima",0);
         $$.add($2);
-        $$.add($3);
+        $$.add($3); 
     }
     |{
         $$ = new Nodo("Epsilon",0);
     }
+;
+
+ElementoParametro
+    :ElementoDeclaracion
+    {
+        $$ = new Nodo("Elemento Parametro",0);
+        $$.add($1);
+    }
+    |ID ':' Tipos ListaCorh
+    {
+        $$ = new Nodo("Elemento Parametro",0);
+        $$.add(new Nodo($1,0));
+        $$.add($3);
+    }
+;
+
+ListaCorh
+    :ListaCorh '['']'
+    |'['']'
 ;
 
 TiposFuncion
@@ -312,7 +359,7 @@ TiposFuncion
     |ID
     {
         $$ = new Nodo("Tipos Funcion",0);
-        $$.add(new Nodo($1,0));
+        $$.add(new Nodo($1,0));;
     }
     |'TIPOARRAY'
     {
@@ -322,8 +369,8 @@ TiposFuncion
 ;
 
 Imprimir
-    : CONSOLELOG '(' Expr ')' ';'
-    {   
+    :CONSOLELOG '(' ListaExpr ')' ';'
+    {
         $$ = new Nodo("Imprimir",0);
         $$.add($3);
     }
@@ -381,7 +428,7 @@ ElseSt
     }
     | 
     {
-        $$ = new Nodo("Epsilon",0);
+        $$ = new Nodo("Epsilon",0);    
     }
 ;
 
@@ -548,7 +595,6 @@ ElementoDeclaracion
         $$ = new Nodo("Elem. Decla",0);
         $$.add(new Nodo($1,0));
         $$.add(new Nodo($3,0));
-        $$.add($5);
     }
     |ID ':' ID '=' '{' ListaValoresTipo '}'
     {
@@ -557,12 +603,12 @@ ElementoDeclaracion
         $$.add(new Nodo($3,0));
         $$.add($6);
     }
-    |ID ':' ID '=' 'NULL'
+    |ID ':' ID '=' Expr
     {
         $$ = new Nodo("Elem. Decla",0);
         $$.add(new Nodo($1,0));
         $$.add(new Nodo($3,0));
-        $$.add(new Nodo("Null",0));
+        $$.add($5);
     }
 ;
 
@@ -683,6 +729,12 @@ ListaDimensiones
         $$.add($1);
     } 
     |'LET' ID ':' Tipos '[' ']'
+    {
+        $$ = new Nodo("Lista Dim.",0);
+        $$.add(new Nodo($2,0));
+        $$.add($4);
+    }
+    |'CONST' ID ':' Tipos '[' ']'
     {
         $$ = new Nodo("Lista Dim.",0);
         $$.add(new Nodo($2,0));
@@ -963,6 +1015,7 @@ NuevoAcceso
         $$.add($2);
     }
 ;
+
 Acceso
     :ID
     {
@@ -1043,6 +1096,18 @@ AsigIndividual
         $$.add($1);
         $$.add($3);
     }
+    |AsigIndividual '.' ID 
+    {
+        $$ = new Nodo("Asg. Ind.",0);
+        $$.add($1);
+        $$.add(new Nodo($3,0));
+    }
+    |ID '.' ID
+    {
+        $$ = new Nodo("Asg. Ind.",0);
+        $$.add(new Nodo($1,0));
+        $$.add(new Nodo($3,0));
+    }
 ;
 
 StatementFuncion
@@ -1053,8 +1118,7 @@ StatementFuncion
     }
     | '{' '}' 
     {
-       // $$ = new Statement(new Array(), @1.first_line, @1.first_column);
-       $$ = new Nodo("Epsilon",0);
+        $$ = new Nodo("Epsilon",0);
     }
 ;
 
@@ -1071,7 +1135,7 @@ InstruccionesFuncionPrima
     {
         $$ = new Nodo("Instr. Funcion Prima",0);
         $$.add($1); 
-        $$.add($2);
+        $$.add($2); 
     }
     |
     {
@@ -1117,12 +1181,12 @@ InstruccionFuncion
     }
     |IncreDecre ';'
     {
-        $$ = new Nodo("Instruccion",0);
+        $$= new Nodo("Instruccion",0);
         $$.add($1);
     }
     |DefinicionTypes ';'
     {
-        $$ = new Nodo("Definicion Type",0);
+        $$ = new Nodo("Instruccion",0);
         $$.add($1);
     }
     |GraficarTs ';'
@@ -1147,6 +1211,16 @@ InstruccionFuncion
         $$ = new Nodo("For1",0);
         $$.add($1);
     }
+    |ForOf 
+    {
+        $$ = new Nodo("For2",0);
+        $$.add($1);
+    }
+    |ForIn 
+    {
+        $$ = new Nodo("For3",0);
+        $$.add($1);
+    }
     |ID '(' ListaExpr ')' ';'
     {
         $$ = new Nodo("Llamada",0);
@@ -1158,10 +1232,20 @@ InstruccionFuncion
         $$ = new Nodo("Llamada",0);
         $$.add(new Nodo($1,0));
     }
-    |Funcion 
+    |ID  '=' '{' ListaValoresTipo '}' ';'
     {
-        $$ = new Nodo("Instruccion",0);
-        $$.add($1);
+        $$ = new Nodo("Asig. Indv",0);
+        $$.add(new Nodo($1,0));
+        $$.add($4);
+    }
+    |'RETURN' Expr ';'
+    {
+        $$ = new Nodo("Return",0);
+        $$.add($2);
+    }
+    |'RETURN' ';'
+    {
+        $$ = new Nodo("Return",0);
     }
     |AsigIndividual '=' Expr ';'
     {
@@ -1169,10 +1253,46 @@ InstruccionFuncion
         $$.add($1);
         $$.add($3);
     }
-    |'RETURN' Expr ';'
+    |AsigIndividual '=' '['']' ';'
     {
-        $$ = new Nodo("Return",0);
-        $$.add($2);
+        $$ = new Nodo("Asig. Indiv.",0);
+        $$.add($1);
+        $$.add(new Nodo("[]",0));
     }
-    
 ;
+
+ForOf
+    :'FOR' '(' 'LET' ID 'OF' Expr')' Statement
+    {
+        $$ = new Nodo("ForOf",0);
+        $$.add(new Nodo($4,0));
+        $$.add($6);
+        $$.add($8);
+    }
+    |'FOR' '(' 'CONST' ID 'OF' Expr')' Statement
+    {
+        $$ = new Nodo("ForOf",0);
+        $$.add(new Nodo($4,0));
+        $$.add($6);
+        $$.add($8);
+    }
+;
+
+ForIn
+    :'FOR' '(' 'LET' ID 'IN' Expr')' Statement
+    {
+        $$ = new Nodo("ForOf",0);
+        $$.add(new Nodo($4,0));
+        $$.add($6);
+        $$.add($8);
+    }
+    |'FOR' '(' 'CONST' ID 'IN' Expr')' Statement
+    {
+        $$ = new Nodo("ForOf",0);
+        $$.add(new Nodo($4,0));
+        $$.add($6);
+        $$.add($8);
+    }
+; 
+
+

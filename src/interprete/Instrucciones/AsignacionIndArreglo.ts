@@ -39,7 +39,7 @@ export class AsignacionIndArreglo extends Expresion {
                             console.log(resultado);
                             console.log(varArreglo);
                             if (resultado.tipo == varArreglo.valor.tipo.tipo) {
-                                //TODO asignar el valor del push y corregir condicion
+                                
                                 return { valor: true, tipo: Tipo.BOOLEAN };
                             } else {
                                 return { valor: false, tipo: Tipo.BOOLEAN };
@@ -90,7 +90,7 @@ export class AsignacionIndArreglo extends Expresion {
                                 /*
                                 let resultado = this.expresionNueva.ejecutar(entorno);
                                 if (resultado.tipo == valor.getElemento(posicion.valor).valor.elementos[0].tipo) {
-                                    //TODO asignar el valor del push y corregir condicion
+                                    
                                     return { valor: true, tipo: Tipo.BOOLEAN };
                                 } else {
                                     return { valor: false, tipo: Tipo.BOOLEAN };

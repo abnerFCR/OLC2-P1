@@ -22,6 +22,7 @@ export class Dot {
     }
 
     limpiar(cadena: string): string {
+        //console.log(cadena);
         if (cadena != undefined && cadena != null) {
             cadena = cadena.replace('\\', '\\\\');
             cadena = cadena.replace('\'', '');
@@ -48,6 +49,7 @@ export class Dot {
         if (raiz.hijos == null || raiz.hijos == undefined) {
             return cuerpoRecorridoArbol;
         }
+        //console.log("Es un loop infinito en: "+ raiz.etiqueta);
         //for(let nodo of raiz.hijos){
         for (let i = 0; i < raiz.hijos.length; i++) {
             cuerpoRecorridoArbol += padre + " -> nodo" + (this.contador + 1) + ";\n";

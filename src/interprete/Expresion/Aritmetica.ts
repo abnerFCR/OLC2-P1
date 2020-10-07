@@ -25,7 +25,7 @@ export class Aritmetica extends Expresion{
 
     public ejecutar(entorno : Entorno) : Retorno{
 
-        //TODO Tengo que agregar los arrays, null, void y undefined que no se si van. 
+        
 
         const izquierdaValue = this.izquierda.ejecutar(entorno);
         const derechaValue = this.derecha.ejecutar(entorno);

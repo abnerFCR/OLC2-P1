@@ -21,8 +21,7 @@ export class DeclaracionArreglo extends Instruccion {
     public ejecutar(entorno: Entorno) {
         //console.table(this.valores);
         
-        //TODO validaciones para que la estructura del arreglo coincida con la estructura de los valores. 
-        //la estructura de los valores se almacenan en la variable respuesta. 
+        
         console.log(this.valores);
         if(this.valores.length > 0){
             let asignacion = new AsignacionArreglo(this.arreglo,this.valores,this.linea,this.columna);

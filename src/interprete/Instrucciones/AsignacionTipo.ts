@@ -44,7 +44,7 @@ export class AsignacionTipo extends Instruccion {
         if (variableTipo == null) {
             throw new Error_(this.linea, this.columna, 'Semantico', 'Error el variable especificada');
         }
-        //TODO verificar que esten todos los atributos para asignar
+        
         for (const atributoValor of this.valoresAtributos) {
             try {
                 if (variableTipo.valor.atributos.has(atributoValor.id)) {

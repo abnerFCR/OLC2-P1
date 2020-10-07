@@ -55,7 +55,6 @@ string2 (\'({escape}|{acceptedquote2})*\')
 string3 (\`({escape}|{acceptedquote3})*\`)
 
 %%
-//TODO si falla algo que no se que es quitar el eof
 \s+                   /* skip whitespace */ 
 "/""/"([^\n])*([\n]|<<EOF>>)                  //console.log("imprime comentario "+yytext);
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] //console.log("imprime comentario Multilinea"+yytext);

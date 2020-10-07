@@ -24,7 +24,7 @@ export class Funcion extends Instruccion{
     
     public ejecutar(entorno: Entorno) {
         try {
-            console.log(this);
+            //console.log(this);
             entorno.guardarFunciones(this.nombre, this, this.linea, this.columna);
         } catch (error) {
             errores.push(error);

@@ -92,6 +92,7 @@ export class AppComponent {
   }
 
   public traducir(){
+    cuadro_texto.entrada = this.entrada.toString();
     errores.length = 0;
     const env = new Entorno(null);
     this.consola_salida = "";

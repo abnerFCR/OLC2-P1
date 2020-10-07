@@ -16,7 +16,7 @@ export class Switch extends Instruccion {
         this.valor = valor;
         this.listaCasos = listaCasos;
     }
-    //TODO el switch ejecuta cada caso por separado, no importa sino tiene break solo ejecutara las instrucciones de ese caso.
+    
     public ejecutar(entorno: Entorno) {
         //entorno.setBanderaCiclo(true);
         entorno.setBanderaSwitch(true);

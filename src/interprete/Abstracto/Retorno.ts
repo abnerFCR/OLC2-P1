@@ -15,7 +15,6 @@ export enum Tipo{
     
 
 }
-//TODO QUITAR TIPOS DE RETORNOS DEL 6 AL 8 SI NO FUNCIONA
 export type Retorno ={
     valor : any,
     tipo : Tipo

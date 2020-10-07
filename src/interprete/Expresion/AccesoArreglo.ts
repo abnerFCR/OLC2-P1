@@ -32,7 +32,6 @@ export class AccesoArreglo extends Expresion {
                     } else if (this.funcion == '.pop') {
                         return { valor: varArreglo.valor.pop(), tipo: varArreglo.valor.tipo };
                     } else if (this.funcion == '.push') {
-                        //TODO ACA VA EL PUSH
                         let insertar = this.paraPush.ejecutar(entorno);
                         if (insertar.tipo == Tipo.ARRAY) {
                             varArreglo.valor.setElemento(new Simbolo(insertar.valor, varArreglo.id, varArreglo.valor.tipo, 'let', ''), varArreglo.valor.getLength());
@@ -64,7 +63,6 @@ export class AccesoArreglo extends Expresion {
                             console.log(resultado);
                             console.log(varArreglo);
                             if (resultado.tipo == varArreglo.valor.tipo.tipo) {
-                                //TODO asignar el valor del push y corregir condicion
                                 let insertar = this.paraPush.ejecutar(entorno);
                                 if (insertar.tipo == Tipo.ARRAY) {
                                     varArreglo.valor.setElemento(new Simbolo(insertar.valor, varArreglo.id, varArreglo.valor.tipo, 'let', ''), varArreglo.valor.getLength());
@@ -109,7 +107,6 @@ export class AccesoArreglo extends Expresion {
                             } else if (this.funcion == '.push') {
                                 let resultado = this.paraPush.ejecutar(entorno);
                                 if (resultado.tipo == valor.getElemento(posicion.valor).valor.elementos[0].tipo) {
-                                    //TODO asignar el valor del push y corregir condicion
                                     return { valor: true, tipo: Tipo.BOOLEAN };
                                 } else {
                                     return { valor: false, tipo: Tipo.BOOLEAN };

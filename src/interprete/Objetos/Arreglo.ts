@@ -1,7 +1,7 @@
 import { Simbolo } from '../Simbolo/Simbolo';
 
 export class Arreglo{
-    private elementos:Array<Simbolo>=new Array();
+    public elementos:Array<Simbolo>=new Array();
     //el tipo es de la forma{tipo:number, idTipo:string};
     public tipo:any;
     public idTipo:number;

@@ -23,7 +23,7 @@ export class Entorno {
         this.funciones = new Map();
     }
 
-    //TODO NOTIFICAR ERROR EN FORMA QUE SE INSERTA EN EL AMBITO
+   
     public guardar(id: string, valor: any, tipo: Tipo, tipoSimbolo:any, idTipo:string, fila:number, columna:number) {
         let entorno: Entorno | null = this;
         if (!entorno.variables.has(id)  &&  !entorno.types.has(id)) {

@@ -32,5 +32,5 @@ export class GraficarTs extends Instruccion {
         }
         cuadro_texto.salida=cuadro_texto.salida + '\n********************************************************FIN***********************************************************\n';
     }
-    //TODO preguntar si tambien se tienen que imprimir los tipos declarados con ts.
+    
 }

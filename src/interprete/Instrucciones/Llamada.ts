@@ -50,11 +50,11 @@ export class Llamada extends Instruccion {
             }
         }
         
-       //TODO banderas de las variables del entorno para ciclos y switch
+       
         try {
             let respuesta = funcion.instrucciones.ejecutar(nuevoEntorno);
             if (respuesta instanceof Return) {
-                //console.log(respuesta.expresion);
+                console.log(respuesta.expresion);
                 if(respuesta.expresion.tipo == Tipo.TYPE){
                     if(funcion.tipoRetorno.tipo != Tipo.TYPE){
                         throw new Error_(this.linea,this.columna,"Semantico","Intenta devolver un tipo en una funcion que no devuelve tipo");

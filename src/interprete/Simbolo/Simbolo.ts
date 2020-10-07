@@ -7,7 +7,6 @@ export class Simbolo{
     public tipoSimbolo:string; //para ver si es constante o variable
     public idTipo:string;
     
-    //TODO agregar al constructor el idDelTipo 
     constructor(valor: any, id: string, tipo: Tipo,tipoSimbolo:string, idTipo:string){
         this.valor = valor;
         this.id = id;

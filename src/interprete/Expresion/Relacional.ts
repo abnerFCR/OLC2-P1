@@ -21,10 +21,7 @@ export class Relacional extends Expresion{
     constructor(private izquierda: Expresion, private derecha: Expresion, private tipo : OperacionRelacional, linea: number, columna: number){
         super(linea,columna);
     }
-    //TODO PREGUNTA: LOS TIPOS TIENEN QUE SER IGUALES PARA COMPARARSE
 
-
-    //TODO Probar muy bien las validaciones
     public ejecutar(entorno : Entorno) : Retorno{
         const izquierdaValue = this.izquierda.ejecutar(entorno);
         const derechaValue = this.derecha.ejecutar(entorno);
