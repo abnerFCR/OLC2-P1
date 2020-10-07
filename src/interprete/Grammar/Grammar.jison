@@ -399,7 +399,7 @@ TiposFuncion
     {
         $$={tipo:Tipo.TYPE, idTipo:$1};
     }
-    |'TIPOARRAY'
+    |TipoNormal ListaCorh
     {
         $$=Tipo.ARRAY;
     }

@@ -361,7 +361,7 @@ TiposFuncion
         $$ = new Nodo("Tipos Funcion",0);
         $$.add(new Nodo($1,0));;
     }
-    |'TIPOARRAY'
+    |TipoNormal ListaCorh
     {
         $$ = new Nodo("Tipos Funcion",0);
         $$.add(new Nodo("Array",0));

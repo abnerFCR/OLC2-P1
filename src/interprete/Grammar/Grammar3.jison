@@ -324,7 +324,7 @@ TiposFuncion
     {
         $$ = $1;
     }
-    |'TIPOARRAY'
+    |TipoNormal ListaCorh
     {
         $$ = $1;
     }
