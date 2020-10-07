@@ -9,7 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "jison": "jison ./src/interprete/Grammar/Grammar.jison && move Grammar.js ./src/interprete/Grammar/",
-    "jison2": "jison ./src/interprete/Grammar/Grammar2.jison && move Grammar2.js ./src/interprete/Grammar/"
+    "jison2": "jison ./src/interprete/Grammar/Grammar2.jison && move Grammar2.js ./src/interprete/Grammar/",
+    "jison3": "jison ./src/interprete/Grammar/Grammar3.jison && move Grammar3.js ./src/interprete/Grammar/"
   },
   "private": true,
   "dependencies": {

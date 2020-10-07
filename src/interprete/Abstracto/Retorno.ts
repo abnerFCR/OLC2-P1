@@ -26,6 +26,7 @@ export class cuadro_texto{
     public static errores_sintacticos_lexicos:string ="";
     public static simbolos = new Array();
     public static entrada:string="";
+    public static traducir:string = "";
 }
 
 export class prueba{

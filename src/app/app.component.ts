@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { parser } from '../interprete/Grammar/Grammar.js';
-//import { parser2 } from '../interprete/Grammar/Grammar2.js';
+import { parser3 } from '../interprete/Grammar/Grammar3.js';
 import { Entorno } from '../interprete/Simbolo/Entorno';
 import { cuadro_texto, prueba } from "../interprete/Abstracto/Retorno";
 import { errores } from '../interprete/Errores/Errores';
@@ -92,14 +92,18 @@ export class AppComponent {
   }
 
   public traducir(){
+    
     cuadro_texto.entrada = this.entrada.toString();
     errores.length = 0;
     const env = new Entorno(null);
     this.consola_salida = "";
+    cuadro_texto.traducir = "";
     cuadro_texto.salida = "";
     cuadro_texto.simbolos =[];
-    const ast = parser.parse(this.entrada.toString());
+    const textoTraducido = parser3.parse(this.entrada.toString());
     
+    const ast = parser.parse(textoTraducido);
+
     for(const instr of ast){
       try{
         if(instr instanceof Funcion){
@@ -124,12 +128,50 @@ export class AppComponent {
         errores.push(error);
       }
     }
-    console.log(env);
-    this.traduccion = this.entrada;
+    //console.log(textoTraducido);
+    this.traduccion = textoTraducido;
     //this.imprimirErrores();
 
   }
+
+  public ejecutarTraduccion() {
+    cuadro_texto.entrada = this.entrada.toString();
+    cuadro_texto.traducir = "";
+    errores.length = 0;
+    const env = new Entorno(null);
+    this.consola_salida = "";
+    cuadro_texto.salida = "";
+    cuadro_texto.simbolos =[];
+    const ast = parser.parse(this.traduccion.toString());
+
+    for(const instr of ast){
+      try{
+        if(instr instanceof Funcion){
+          instr.ejecutar(env);
+        }
+      }catch{
+        errores.push();
+      }
+    }
+    console.log(env);
+
+    for (const instr of ast) {
+      try {
+        if(instr instanceof Funcion){
+          
+        }else{
+          instr.ejecutar(env);
+        }
+      } catch (error) {
+        errores.push(error);
+      }
+    }
+    console.log(env);
+    this.imprimirErrores();
   
+  }
+
+
   public imprimirErrores() {
     for (const err of errores) {
       this.consola_salida = this.consola_salida + "-----------------------**** ERROR ****-----------------------------------------\n";
